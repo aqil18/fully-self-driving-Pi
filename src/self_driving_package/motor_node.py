@@ -2,6 +2,10 @@
 
 ## Subscribes to the motor topic and acts on the commands.
 
+## Aim:
+# 1. Receives angle commands from the motor topic, e.g., /motor/cmd
+# 2. Acts on the commands, e.g., Right 23 degrees, Left 43 degrees
+
 import rospy
 from std_msgs.msg import String
 

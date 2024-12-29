@@ -2,6 +2,12 @@
 
 
 ## Subscribes to the camera topic, performs inference, and publishes commands to a motor topic, e.g., /motor/cmd.
+## Aim: 
+# 1. Draws bounding lines around detected lane in the image
+# 2. Draws an angle of direction relative to the bounding lines and normal line
+# 3. Calculates the difference between the angle of direction and the normal line (Can be separated into angle node)
+# 4. Publishes the difference as a command to the motor topic, e.g., /motor/cmd (Can be separated into angle node)
+
 
 import rospy
 from sensor_msgs.msg import Image

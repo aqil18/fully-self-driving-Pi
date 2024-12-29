@@ -2,6 +2,11 @@
 
 ## Captures images and publishes them to a topic, e.g., /camera/image_raw.
 
+## Aim: 
+# 1. Recieves camera input from the Raspberry Pi camera
+# 2. Draws a normal direction line on the image
+# 3. Publishes the image to a topic, e.g., /camera/image_raw
+
 import rospy
 from sensor_msgs.msg import Image
 import cv2
