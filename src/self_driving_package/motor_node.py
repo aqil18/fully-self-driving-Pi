@@ -17,6 +17,12 @@ def motor_callback(data):
         rospy.loginfo("Stopping motor")
     elif command == "forward":
         rospy.loginfo("Moving forward")
+    elif command.startswith("Right"):
+        angle = int(command.split()[1])
+        rospy.loginfo(f"Turning right {angle} degrees")
+    elif command.startswith("Left"):
+        angle = int(command.split()[1])
+        rospy.loginfo(f"Turning left {angle} degrees")
     # Add more actions as needed
 
 def motor_action_node():

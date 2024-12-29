@@ -5,8 +5,6 @@
 ## Aim: 
 # 1. Draws bounding lines around detected lane in the image
 # 2. Draws an angle of direction relative to the bounding lines and normal line
-# 3. Calculates the difference between the angle of direction and the normal line (Can be separated into angle node)
-# 4. Publishes the difference as a command to the motor topic, e.g., /motor/cmd (Can be separated into angle node)
 
 
 import rospy
@@ -20,8 +18,16 @@ def inference_callback(data):
     frame = bridge.imgmsg_to_cv2(data, "bgr8")
 
     # Perform inference (example: object detection)
-    command = "stop"  # Example output after inference
-    rospy.loginfo(f"Inference result: {command}")
+    # Example: Draw bounding lines and calculate angle
+    # (This is a placeholder for actual lane detection and angle calculation logic)
+    cv2.line(frame, (100, 200), (200, 200), (0, 255, 0), 2)  # Example bounding line
+    angle_of_direction = 30  # Example angle calculation
+    rospy.loginfo(f"Angle of direction: {angle_of_direction} degrees")
+
+    # Calculate difference from normal line (e.g., 0 degrees)
+    angle_difference = angle_of_direction - 0
+    command = f"Right {angle_difference}" if angle_difference > 0 else f"Left {abs(angle_difference)}"
+    rospy.loginfo(f"Publishing command: {command}")
     motor_pub.publish(command)
 
 def inference_node():
