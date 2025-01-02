@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+
+## TO DEPRECATE
+
 ## Aim:
 # 1. Calculates the difference between the angle of direction and the normal line (Can be separated into angle node)
 # 2. Publishes the difference as a command to the motor topic, e.g., /motor/cmd (Can be separated into angle node)

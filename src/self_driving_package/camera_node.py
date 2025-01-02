@@ -6,11 +6,14 @@
 # 1. Recieves camera input from the Raspberry Pi camera
 # 2. Draws a normal direction line on the image
 # 3. Publishes the image to a topic, e.g., /camera/image_raw
-
+# Input: RaspberryPi Video
+# Output: Publish an image to the camera topic
 import rospy
 from sensor_msgs.msg import Image
 import cv2
 from cv_bridge import CvBridge
+
+
 
 def camera_publisher():
     rospy.init_node('camera_node', anonymous=True)
@@ -28,6 +31,10 @@ def camera_publisher():
         rate.sleep()
 
     cap.release()
+
+# Draws normal line onto image - would this affect inference
+def drawNormal():
+    pass
 
 if __name__ == "__main__":
     try:
