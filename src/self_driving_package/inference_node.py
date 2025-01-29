@@ -3,11 +3,9 @@
 
 ## Subscribes to the camera topic, performs inference, and publishes commands to a motor topic, e.g., /motor/cmd.
 ## Aim: 
-# 1. Draws bounding lines around detected lane in the image from camera topic
-# 2. Draws an angle of direction relative to the bounding lines and normal line publishes the image to a display topic
-# 3. Calculates angle of direction and publishes the command to a motor topic
-# Input: Image from camera node
-# Output: Annotated image for angle node for display topic and angle of direction for motor topic
+# 1. Draws bounding lines around detected lane in the image
+# 2. Draws an angle of direction relative to the bounding lines and normal line
+
 
 import rospy
 from sensor_msgs.msg import Image
@@ -15,8 +13,6 @@ from std_msgs.msg import String
 from cv_bridge import CvBridge
 import cv2
 
-
-# Callback from camera topic
 def inference_callback(data):
     bridge = CvBridge()
     frame = bridge.imgmsg_to_cv2(data, "bgr8")
@@ -33,17 +29,6 @@ def inference_callback(data):
     command = f"Right {angle_difference}" if angle_difference > 0 else f"Left {abs(angle_difference)}"
     rospy.loginfo(f"Publishing command: {command}")
     motor_pub.publish(command)
-
-
-# Draw lane boundaries
-def drawLane():
-    pass
-
-def drawAngledLine():
-    pass
-
-def calculateAngle():
-    return 0
 
 def inference_node():
     global motor_pub
