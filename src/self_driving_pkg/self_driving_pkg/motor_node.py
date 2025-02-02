@@ -9,6 +9,8 @@
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
+from self_driving_pkg.car_utils.Motor import Motor  # Importing the motor module
+
 
 class MotorActionNode(Node):
     def __init__(self):
@@ -16,20 +18,32 @@ class MotorActionNode(Node):
         self.subscription = self.create_subscription(
             String, '/motor/cmd', self.motor_callback, 10)
         self.get_logger().info("Motor action node has started!")
+        self.motor = Motor()
 
+        
     def motor_callback(self, msg):
-        command = msg.data
-        self.get_logger().info(f"Received motor command: {command}")
-        if command == "stop":
-            self.get_logger().info("Stopping motor")
-        elif command == "forward":
-            self.get_logger().info("Moving forward")
-        elif command.startswith("Right"):
-            angle = int(command.split()[1])
-            self.get_logger().info(f"Turning right {angle} degrees")
-        elif command.startswith("Left"):
-            angle = int(command.split()[1])
-            self.get_logger().info(f"Turning left {angle} degrees")
+        """Handle incoming ROS 2 messages."""
+        try:
+            command = msg.data
+            self.get_logger().info(f"Received motor command: {command}")            
+            action = command.get("action", "")
+            angle = command.get("angle", 0)
+            speed = command.get("speed", 50)
+
+            if action == "move":
+                self.motor.move(angle, speed)
+                self.get_logger().info(f'Moving at {angle}° with {speed}% speed')
+            elif action == "rotate":
+                self.motor.rotate("left" if angle < 0 else "right", speed)
+                self.get_logger().info(f'Rotating {"left" if angle < 0 else "right"} at {speed}% speed')
+            elif action == "stop":
+                self.motor.stop()
+                self.get_logger().info('Stopping motors')
+            else:
+                self.get_logger().warn('Invalid action received')
+
+        except Exception as e:
+            self.get_logger().error(f'Error processing message: {e}')
 
 def main(args=None):
     rclpy.init(args=args)

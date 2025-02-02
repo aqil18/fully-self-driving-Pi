@@ -14,7 +14,10 @@ Update setup.py.
 rosdep install -i --from-path src --rosdistro jazzy -y (Update dependencies)
 colcon build --packages-select self_driving_pkg
 . install/setup.bash
+
+# How to run the nodes?
 ros2 run self_driving_pkg motor_node
+ros2 topic pub /motor/cmd std_msgs/msg/String "{data: 'stop'}" (std_msgs ROS2 standard message type)
 
 ## Problem 1 - Lane Tracking
 The goal is to effectively follow a line by supplying angle commands to a motor based on the results of a deep learning model for lane detection.
