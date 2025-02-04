@@ -41,7 +41,9 @@ class Motor:
         BR = VY + VX
         
         self._set_wheel_speeds(FL, BL, FR, BR)
-
+        print(f"MOVING") # Need to use the ros2 logger here for this to work 
+        
+        
     def rotate(self, direction, speed=50):
         """
         Rotate the robot.
