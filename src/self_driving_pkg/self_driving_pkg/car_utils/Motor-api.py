@@ -3,6 +3,8 @@ import math
 from PCA9685 import PCA9685
 from ADC import *
 
+## API example for the motor control
+
 class Motor:
     def __init__(self):
         self.pwm = PCA9685(0x40, debug=True)
