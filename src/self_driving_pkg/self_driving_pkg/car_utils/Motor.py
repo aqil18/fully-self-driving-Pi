@@ -7,73 +7,114 @@ class Motor:
     def __init__(self):
         self.pwm = PCA9685(0x40, debug=True)
         self.pwm.setPWMFreq(50)
+        self.time_proportion = 3     #Depend on your own car,If you want to get the best out of the rotation mode, change the value by experimenting.
         self.adc = Adc()
+    def duty_range(self,duty1,duty2,duty3,duty4):
+        if duty1>4095:
+            duty1=4095
+        elif duty1<-4095:
+            duty1=-4095        
+        
+        if duty2>4095:
+            duty2=4095
+        elif duty2<-4095:
+            duty2=-4095
+            
+        if duty3>4095:
+            duty3=4095
+        elif duty3<-4095:
+            duty3=-4095
+            
+        if duty4>4095:
+            duty4=4095
+        elif duty4<-4095:
+            duty4=-4095
+        return duty1,duty2,duty3,duty4
+        
+    def left_Upper_Wheel(self,duty):
+        if duty>0:
+            self.pwm.setMotorPwm(0,0)
+            self.pwm.setMotorPwm(1,duty)
+        elif duty<0:
+            self.pwm.setMotorPwm(1,0)
+            self.pwm.setMotorPwm(0,abs(duty))
+        else:
+            self.pwm.setMotorPwm(0,4095)
+            self.pwm.setMotorPwm(1,4095)
+    def left_Lower_Wheel(self,duty):
+        if duty>0:
+            self.pwm.setMotorPwm(3,0)
+            self.pwm.setMotorPwm(2,duty)
+        elif duty<0:
+            self.pwm.setMotorPwm(2,0)
+            self.pwm.setMotorPwm(3,abs(duty))
+        else:
+            self.pwm.setMotorPwm(2,4095)
+            self.pwm.setMotorPwm(3,4095)
+    def right_Upper_Wheel(self,duty):
+        if duty>0:
+            self.pwm.setMotorPwm(6,0)
+            self.pwm.setMotorPwm(7,duty)
+        elif duty<0:
+            self.pwm.setMotorPwm(7,0)
+            self.pwm.setMotorPwm(6,abs(duty))
+        else:
+            self.pwm.setMotorPwm(6,4095)
+            self.pwm.setMotorPwm(7,4095)
+    def right_Lower_Wheel(self,duty):
+        if duty>0:
+            self.pwm.setMotorPwm(4,0)
+            self.pwm.setMotorPwm(5,duty)
+        elif duty<0:
+            self.pwm.setMotorPwm(5,0)
+            self.pwm.setMotorPwm(4,abs(duty))
+        else:
+            self.pwm.setMotorPwm(4,4095)
+            self.pwm.setMotorPwm(5,4095)
+            
+ 
+    def setMotorModel(self,duty1,duty2,duty3,duty4):
+        duty1,duty2,duty3,duty4=self.duty_range(duty1,duty2,duty3,duty4)
+        self.left_Upper_Wheel(duty1)
+        self.left_Lower_Wheel(duty2)
+        self.right_Upper_Wheel(duty3)
+        self.right_Lower_Wheel(duty4)
+            
+    def Rotate(self,n):
+        angle = n
+        bat_compensate =7.5/(self.adc.recvADC(2)*3)
+        while True:
+            W = 2000
+
+            VY = int(2000 * math.cos(math.radians(angle)))
+            VX = -int(2000 * math.sin(math.radians(angle)))
+
+            FR = VY - VX + W
+            FL = VY + VX - W
+            BL = VY - VX - W
+            BR = VY + VX + W
+
+            PWM.setMotorModel(FL, BL, FR, BR)
+            print("rotating")
+            time.sleep(5*self.time_proportion*bat_compensate/1000)
+            angle -= 5
+
+PWM=Motor()          
+def loop(): 
+    PWM.setMotorModel(2000,2000,2000,2000)       #Forward
+    time.sleep(3)
+    PWM.setMotorModel(-2000,-2000,-2000,-2000)   #Back
+    time.sleep(3)
+    PWM.setMotorModel(-500,-500,2000,2000)       #Left 
+    time.sleep(3)
+    PWM.setMotorModel(2000,2000,-500,-500)       #Right    
+    time.sleep(3)
+    PWM.setMotorModel(0,0,0,0)                   #Stop
     
-    def _set_wheel_speeds(self, FL, BL, FR, BR):
-        """Set individual wheel speeds."""
-        self.pwm.setMotorPwm(0, max(0, FL))
-        self.pwm.setMotorPwm(1, max(0, -FL))
-        self.pwm.setMotorPwm(2, max(0, BL))
-        self.pwm.setMotorPwm(3, max(0, -BL))
-        self.pwm.setMotorPwm(4, max(0, FR))
-        self.pwm.setMotorPwm(5, max(0, -FR))
-        self.pwm.setMotorPwm(6, max(0, BR))
-        self.pwm.setMotorPwm(7, max(0, -BR))
-
-    def move(self, angle, speed=50):
-        """
-        Move the robot in a specified direction.
-
-        :param angle: Movement direction (0° = forward, 180° = backward)
-        :param speed: Speed percentage (0-100)
-        """
-        speed = int(speed * 40.95)  # Convert to motor duty range (0-4095)
-        rad_angle = math.radians(angle)
-        
-        # Calculate wheel speeds based on direction
-        VY = int(speed * math.cos(rad_angle))
-        VX = int(speed * math.sin(rad_angle))
-        
-        # Differential drive formula
-        FL = VY + VX
-        BL = VY - VX
-        FR = VY - VX
-        BR = VY + VX
-        
-        self._set_wheel_speeds(FL, BL, FR, BR)
-        print(f"MOVING") # Need to use the ros2 logger here for this to work 
-        
-        
-    def rotate(self, direction, speed=50):
-        """
-        Rotate the robot.
-
-        :param direction: "left" or "right"
-        :param speed: Speed percentage (0-100)
-        """
-        speed = int(speed * 40.95)  # Convert to motor duty range (0-4095)
-        
-        if direction == "left":
-            self._set_wheel_speeds(-speed, -speed, speed, speed)
-        elif direction == "right":
-            self._set_wheel_speeds(speed, speed, -speed, -speed)
-
-    def stop(self):
-        """Stop the robot."""
-        self._set_wheel_speeds(0, 0, 0, 0)
-
-
-# Example Usage
-if __name__ == "__main__":
-    motor = Motor()
-
+def destroy():
+    PWM.setMotorModel(0,0,0,0)                   
+if __name__=='__main__':
     try:
-        motor.move(0, 50)     # Move forward at 50% speed
-        time.sleep(2)
-        motor.move(180, 50)   # Move backward at 50% speed
-        time.sleep(2)
-        motor.rotate("left", 40)  # Rotate left
-        time.sleep(2)
-        motor.stop()          # Stop the robot
-    except KeyboardInterrupt:
-        motor.stop()
+        loop()
+    except KeyboardInterrupt:  # When 'Ctrl+C' is pressed, the child program destroy() will be  executed.
+        destroy()
