@@ -10,6 +10,7 @@ class Buzzer:
             buzzer.off()
 if __name__=='__main__':
     B=Buzzer()
+    print("Buzzer is running")
     B.run('1')
     time.sleep(3)
     B.run('0')
