@@ -1,3 +1,16 @@
+# dev 
+__pycache__
+params.json
+
+# docker
+.onCreateCommandMarker
+.postCreateCommandMarker
+.updateContentCommandMarker
+/.cache
+/.dotnet
+/.gnupg
+/.local
+/.vscode-server
 
 # ros2 build files
 /build
