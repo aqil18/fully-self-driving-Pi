@@ -9,7 +9,7 @@
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
-from self_driving_pkg.self_driving_pkg.car_utils.Motor import Motor  # Importing the motor module
+from self_driving_pkg.car_utils.Motor import Motor  # Importing the motor module
 
 
 class MotorActionNode(Node):

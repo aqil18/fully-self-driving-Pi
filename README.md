@@ -17,11 +17,12 @@ Fully (but not so fully) self driving Raspberry Pi car.
 Update setup.py.
 
 ## Updating nodes?
+### At ws root -> If you have multiple packages
 rosdep install -i --from-path src --rosdistro jazzy -y (Update dependencies)
 colcon build --packages-select self_driving_pkg
-. install/setup.bash
 
 # How to run the nodes?
+## At ws root as this is where you built the packages
 ros2 run self_driving_pkg motor_node
 ros2 topic pub /motor/cmd std_msgs/msg/String '{"data": "{\"action\": \"move\", \"angle\": 0, \"speed\": 70}"}
 
