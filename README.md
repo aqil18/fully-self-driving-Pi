@@ -7,6 +7,12 @@ Fully (but not so fully) self driving Raspberry Pi car.
 3. Run source /opt/ros/$ROS_DISTRO/setup.bash or . install/setup.bash
 4. Run ros2
 
+## Reopen in RPI
+1. VSCODE ssh into rpi
+2. VSCODE reopen in container
+3. Run source /opt/ros/$ROS_DISTRO/setup.bash or . install/setup.bash
+4. Run ros2
+
 ## Adding new nodes?
 Update setup.py.
 

@@ -13,6 +13,7 @@ params.json
 /.vscode-server
 
 # ros2 build files
-/build
-/install
-/log
+/src/build
+/src/install
+/src/log
+.ros
