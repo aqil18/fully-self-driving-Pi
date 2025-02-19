@@ -8,7 +8,21 @@
   <license>TODO: License declaration</license>
 
 
-  <depend>python3-gpiozero</depend>
+  <build_depend>builtin_interfaces</build_depend>
+  <build_depend>std_msgs</build_depend>
+  
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>builtin_interfaces</exec_depend>
+
+  <exec_depend>python3-numpy</exec_depend> # These are dependencies to python3-opencv
+  <exec_depend>libboost-python-dev</exec_depend> # These are dependencies to python3-opencv
+  <exec_depend>python3-opencv</exec_depend>
+  <exec_depend>rclpy</exec_depend>
+
+  <exec_depend>python3-gpiozero</exec_depend>
+
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
