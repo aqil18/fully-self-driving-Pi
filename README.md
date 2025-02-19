@@ -10,7 +10,7 @@ Fully (but not so fully) self driving Raspberry Pi car.
 ## Reopen in RPI
 1. VSCODE ssh into rpi
 2. VSCODE reopen in container
-3. Run source /opt/ros/$ROS_DISTRO/setup.bash or . install/setup.bash
+3. Run source /opt/ros/$ROS_DISTRO/setup.bash
 4. Run ros2
 
 ## Adding new nodes?
@@ -18,8 +18,12 @@ Update setup.py.
 
 ## Updating nodes?
 ### At ws root -> If you have multiple packages
-rosdep install -i --from-path src --rosdistro jazzy -y (Update dependencies)
+#### Update dependencies
+rosdep install -i --from-path src --rosdistro jazzy -y
+#### Build package
 colcon build --packages-select self_driving_pkg
+#### Source project specific setup
+source ./install/setup.bash 
 
 # How to run the nodes?
 ## At ws root as this is where you built the packages

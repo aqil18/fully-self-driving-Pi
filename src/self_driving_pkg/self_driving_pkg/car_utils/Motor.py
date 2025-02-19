@@ -1,6 +1,6 @@
 import time
 import math
-from PCA9685 import PCA9685
+from .PCA9685 import PCA9685
 from ADC import *
 
 class Motor:
