@@ -10,7 +10,8 @@ Fully (but not so fully) self driving Raspberry Pi car.
 ## Reopen in RPI
 1. VSCODE ssh into rpi
 2. VSCODE reopen in container
-3. Run source /opt/ros/$ROS_DISTRO/setup.bash
+3. Run 
+source /opt/ros/$ROS_DISTRO/setup.bash
 4. Run ros2
 
 ## Adding new nodes?
@@ -32,3 +33,18 @@ ros2 topic pub /motor/cmd std_msgs/msg/String '{"data": "{\"action\": \"move\", 
 
 ## Problem 1 - Lane Tracking
 The goal is to effectively follow a line by supplying angle commands to a motor based on the results of a deep learning model for lane detection.
+
+
+## Creating a venv
+sudo apt update
+sudo apt install python3-virtualenv
+virtualenv --version
+virtualenv -p python3 ./envx
+source ./envx/bin/activate
+touch ./envx/COLCON_IGNORE
+python3 -m pip install <package list>
+export PYTHONPATH="/home/ws/envx/lib/python3.12/site-packages"
+source /opt/ros/$ROS_DISTRO/setup.bash
+colcon build --packages-select self_driving_pkg
+source ./install/setup.bash 
+ros2 run self_driving_pkg motor_node
