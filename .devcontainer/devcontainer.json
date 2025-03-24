@@ -8,8 +8,8 @@
             "USERNAME": "aqil"
         }
     },
-    "workspaceFolder": "/home/ws",
-    "workspaceMount": "source=${localWorkspaceFolder},target=/home/ws,type=bind",
+    "workspaceFolder": "/home/aqil",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/home/aqil,type=bind",
     "customizations": {
         "vscode": {
             "extensions":[

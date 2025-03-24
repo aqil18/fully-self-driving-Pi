@@ -9,7 +9,8 @@
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
-from .car_utils.Motor import Motor  # Ensure this path is correct
+from .car_utils.Motor_api import Motor  # Ensure this path is correct
+import json
 
 
 class MotorActionNode(Node):
@@ -24,7 +25,8 @@ class MotorActionNode(Node):
     def motor_callback(self, msg):
         """Handle incoming ROS 2 messages."""
         try:
-            command = msg.data
+            command = json.loads(msg.data)
+
             self.get_logger().info(f"Received motor command: {command}")            
             action = command.get("action", "")
             angle = command.get("angle", 0)
