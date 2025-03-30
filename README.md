@@ -38,13 +38,26 @@ The goal is to effectively follow a line by supplying angle commands to a motor 
 ## Creating a venv
 sudo apt update
 sudo apt install python3-virtualenv
+sudo chmod 666 /dev/i2c-1
 virtualenv --version
 virtualenv -p python3 ./envx
 source ./envx/bin/activate
 touch ./envx/COLCON_IGNORE
-python3 -m pip install <package list>
-export PYTHONPATH="/home/ws/envx/lib/python3.12/site-packages"
+python3 -m pip install smbus2
+export PYTHONPATH="/home/aqil/envx/lib/python3.12/site-packages" # NOTE ensure this is right for your system
 source /opt/ros/$ROS_DISTRO/setup.bash
 colcon build --packages-select self_driving_pkg
 source ./install/setup.bash 
 ros2 run self_driving_pkg motor_node
+
+
+## To test
+Before running
+1. Ensure the power to motors is turned on
+
+To test
+1. Open another terminal
+2. source /opt/ros/$ROS_DISTRO/setup.bash
+3. ros2 topic pub /motor/cmd std_msgs/msg/String "{data: '{\"action\": \"move\", \"angle\": 0, \"speed\": 70}'}"
+4. ros2 topic pub /motor/cmd std_msgs/msg/String "{data: '{\"action\": \"move\", \"angle\": 0, \"speed\": 0}'}"
+
