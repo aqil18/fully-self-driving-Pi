@@ -60,4 +60,8 @@ To test
 2. source /opt/ros/$ROS_DISTRO/setup.bash
 3. ros2 topic pub /motor/cmd std_msgs/msg/String "{data: '{\"action\": \"move\", \"angle\": 0, \"speed\": 70}'}"
 4. ros2 topic pub /motor/cmd std_msgs/msg/String "{data: '{\"action\": \"move\", \"angle\": 0, \"speed\": 0}'}"
+sudo apt install libgl1
 
+# To test camera
+1. Open car utils
+2. Run camera.py

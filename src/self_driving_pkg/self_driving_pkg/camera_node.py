@@ -13,6 +13,7 @@ from rclpy.node import Node
 from sensor_msgs.msg import Image
 import cv2
 from cv_bridge import CvBridge
+from picamera2 import Picamera2
 
 class CameraNode(Node):
     def __init__(self):
@@ -22,18 +23,25 @@ class CameraNode(Node):
         self.rate = self.create_rate(10)  # 10 Hz
         self.bridge = CvBridge()
         
-        self.cap = cv2.VideoCapture(0)  # Open default camera
-
+        self.picam2 = Picamera2()
+        self.picam2.configure(self.picam2.preview_configuration(main={"format": "BGR888", "size": (640, 480)}))
+        self.picam2.start()
+        
     def capture_and_publish(self):
         while rclpy.ok():
-            ret, frame = self.cap.read()
-            if ret:
-                image_msg = self.bridge.cv2_to_imgmsg(frame, "bgr8")
-                self.image_pub.publish(image_msg)
+            frame = self.picam2.capture_array()
+            # Draw a normal direction line in the center
+            height, width, _ = frame.shape
+            cv2.line(frame, (width // 2, height), (width // 2, height // 2), (0, 255, 0), 2)
+
+            image_msg = self.bridge.cv2_to_imgmsg(frame, "bgr8")
+            self.image_pub.publish(image_msg)
+            self.get_logger().info("Published frame to /camera/image_raw")
+
             self.rate.sleep()
 
-    def destroy(self):
-        self.cap.release()
+    def destroy(self):        
+        self.picam2.stop()
 
 def main():
     rclpy.init()
