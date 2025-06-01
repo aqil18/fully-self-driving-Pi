@@ -20,6 +20,7 @@ RUN apt-get install -y python3-pip
 RUN sudo apt install libopencv-dev python3-opencv
 RUN sudo apt install python3-numpy
 RUN sudo apt install libboost-python-dev
+RUN sudo apt install -y libgl1
 ENV SHELL /bin/bash
     
 # ********************************************************
