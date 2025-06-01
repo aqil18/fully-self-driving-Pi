@@ -5,6 +5,10 @@ Fully (but not so fully) self driving Raspberry Pi car.
 The goal is to effectively follow a line by supplying angle commands to a motor based on the results of a deep learning model for lane detection.
 
 # First time dev setup?
+## Cloning cv_bridge
+cd src
+git clone https://github.com/ros-perception/vision_opencv.git -b ros2
+cd ..
 ## Connecting to the dev container
 1. Remote connections
 2. Reopen in container
