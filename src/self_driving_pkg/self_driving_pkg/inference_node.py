@@ -18,6 +18,8 @@ class InferenceNode(Node):
         
         self.motor_pub = self.create_publisher(String, '/motor/cmd', 10)
         self.create_subscription(Image, '/camera/image_raw', self.inference_callback, 10)
+        self.get_logger().info("Inference node has started!")
+
 
     def inference_callback(self, data):
         bridge = CvBridge()
