@@ -47,7 +47,7 @@ class ImagePublisher(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    image_directory = '/example_images'  # Change this path to your image folder
+    image_directory = '/home/ws/src/self_driving_pkg/self_driving_pkg/example_images'  # Change this path to your image folder
     topic = '/camera/image_raw'
     publish_rate = 1  # Hz
 
