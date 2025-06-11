@@ -17,6 +17,7 @@ class InferenceNode(Node):
         super().__init__('inference_node')
         
         self.motor_pub = self.create_publisher(String, '/motor/cmd', 10)
+        self.image_pub = self.create_publisher(Image, '/inference/image_out', 10)
         self.create_subscription(Image, '/camera/image_raw', self.inference_callback, 10)
         self.get_logger().info("Inference node has started!")
 
@@ -37,6 +38,12 @@ class InferenceNode(Node):
         command = f"Right {angle_difference}" if angle_difference > 0 else f"Left {abs(angle_difference)}"
         self.get_logger().info(f"Publishing command: {command}")
         self.motor_pub.publish(String(data=command))
+
+
+        # Publish annotated frame
+        annotated_msg = self.bridge.cv2_to_imgmsg(frame, "bgr8")
+        self.image_pub.publish(annotated_msg)
+
 
 def main():
     rclpy.init()

@@ -24,5 +24,6 @@ setup(
         'motor_node = self_driving_pkg.motor_node:main',
         'inference_node = self_driving_pkg.inference_node:main',
         'image_test_node = self_driving_pkg.image_test_node:main',
+        'display_node = self_driving_pkg.display_node:main',
     ]}
 )
