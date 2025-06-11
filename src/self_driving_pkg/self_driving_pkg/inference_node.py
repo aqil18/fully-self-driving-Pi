@@ -41,7 +41,7 @@ class InferenceNode(Node):
 
 
         # Publish annotated frame
-        annotated_msg = self.bridge.cv2_to_imgmsg(frame, "bgr8")
+        annotated_msg = bridge.cv2_to_imgmsg(frame, "bgr8")
         self.image_pub.publish(annotated_msg)
 
 
