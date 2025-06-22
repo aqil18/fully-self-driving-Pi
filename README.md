@@ -45,6 +45,12 @@ ros2 topic pub /motor/cmd std_msgs/msg/String '{"data": "{\"action\": \"move\", 
 # Adding new nodes?
 Update setup.py.
 
+# Testing Update 21/06
+- The image_test_node can be used to upload select images from example_images
+- The inference_node can be used to complete 'FAKE' inference on the images and gives angle and speed
+- The display_node can be used to see the output images in output_images
+- The motor_node can receive callbacks but has not been teested to follow angles and speed
+
 # To test camera
 1. Open car utils
 2. Run camera.py
