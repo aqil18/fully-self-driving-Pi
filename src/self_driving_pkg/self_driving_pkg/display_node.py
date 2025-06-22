@@ -18,9 +18,6 @@ class DisplayNode(Node):
 
     def display_callback(self, data):
         frame = self.bridge.imgmsg_to_cv2(data, "bgr8")
-        # cv2.imshow("Inference Output", frame)
-        # cv2.waitKey(1)  # Required to keep the window responsive
-        
         cv2.imwrite('/home/ws/src/self_driving_pkg/self_driving_pkg/output_images/frame.jpg', frame)  # Saves image to disk
         self.get_logger().info("/home/ws/src/self_driving_pkg/self_driving_pkg/output_images")
         
