@@ -1,7 +1,7 @@
 # fully-self-driving-Pi
 Fully (but not so fully) self driving Raspberry Pi car.
 
-![RPI](photos/IMG_4602.jpg) 
+<img src="photos/IMG_4602.jpg" width="48">
 
 
 
