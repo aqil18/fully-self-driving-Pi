@@ -1,5 +1,5 @@
 # Aim
-# 1. To display an output of the inference model for testing purposes.
+# 1. To save an output of the inference model for testing purposes.
 
 #!/usr/bin/env python3
 

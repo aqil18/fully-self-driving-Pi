@@ -1,6 +1,10 @@
 # fully-self-driving-Pi
 Fully (but not so fully) self driving Raspberry Pi car.
 
+![RPI](photos/IMG_4602.jpg) 
+
+
+
 # Problem 1 - Lane Tracking
 The goal is to effectively follow a line by supplying angle commands to a motor based on the results of a deep learning model for lane detection.
 
