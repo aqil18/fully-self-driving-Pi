@@ -18,8 +18,8 @@ class DisplayNode(Node):
 
     def display_callback(self, data):
         frame = self.bridge.imgmsg_to_cv2(data, "bgr8")
-        cv2.imwrite('/home/ws/src/self_driving_pkg/self_driving_pkg/output_images/frame.jpg', frame)  # Saves image to disk
-        self.get_logger().info("/home/ws/src/self_driving_pkg/self_driving_pkg/output_images")
+        cv2.imwrite('/home/aqil/src/self_driving_pkg/self_driving_pkg/output_images/frame.jpg', frame)  # Saves image to disk
+        self.get_logger().info("/home/aqil/src/self_driving_pkg/self_driving_pkg/output_images")
         
 
 
