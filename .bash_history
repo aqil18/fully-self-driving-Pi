@@ -59,3 +59,61 @@ sudo apt install -y libgl1 libgl1-mesa-glx libglib2.0-dev
 sudo apt install -y libgl1 libglib2.0-dev
 ros2 run self_driving_pkg camera_node
 python /home/aqil/.vscode-server/extensions/ms-python.python-2025.2.0-linux-arm64/python_files/printEnvVariablesToFile.py /home/aqil/.vscode-server/extensions/ms-python.python-2025.2.0-linux-arm64/python_files/deactivate/bash/envVars.txt
+source /home/aqil/envx/bin/activate
+ros2
+source /opt/ros/$ROS_DISTRO/setup.bash
+ros2
+ls
+cd src
+ls
+cd vision_opencv/
+ls
+cd..
+cd ..
+sudo apt update
+virtualenv -p python3 ./envx
+sudo apt install python3-virtualenv
+sudo chmod 666 /dev/i2c-1
+virtualenv --version
+virtualenv -p python3 ./envx
+cd ..
+ls
+colcon build --packages-select self_driving_pkg --symlink-install
+colcon build --packages-select self_driving_pkg --symlink-install
+tree -L 2
+source ./install/setup.bash 
+rm -rf build/ install/ log/
+colcon build --symlink-install
+source install/setup.bash
+ros2 run self_driving_pkg motor_node
+ros2 topic pub /motor/cmd std_msgs/msg/String '{"data": "{\"action\": \"move\", \"angle\": 0, \"speed\": 70}"}
+
+
+uit
+quit
+ros2 run self_driving_pkg inference_node
+ros2 run self_driving_pkg inference_node
+ros2 run self_driving_pkg inference_node
+ros2 run self_driving_pkg inference_node
+ros2 run self_driving_pkg inference_node
+source /home/aqil/envx/bin/activate
+source /opt/ros/$ROS_DISTRO/setup.bash
+ros2 run self_driving_pkg display_node
+source ./install/setup.bash 
+ros2 run self_driving_pkg display_node
+ros2 run self_driving_pkg display_node
+ros2 run self_driving_pkg display_node
+ros2 run self_driving_pkg display_node
+ros2 run self_driving_pkg display_node
+ros2 run self_driving_pkg display_node
+source /home/aqil/envx/bin/activate
+ros2 run self_driving_pkg motor_node
+source /opt/ros/$ROS_DISTRO/setup.bash
+source ./install/setup.bash 
+ros2 run self_driving_pkg image_test_node
+ros2 run self_driving_pkg image_test_node
+ros2 run self_driving_pkg image_test_node
+ros2 run self_driving_pkg image_test_node
+ros2 run self_driving_pkg image_test_node
+ros2 run self_driving_pkg image_test_node
+source /home/aqil/envx/bin/activate
