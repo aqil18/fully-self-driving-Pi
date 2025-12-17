@@ -46,6 +46,10 @@ ros2 run self_driving_pkg motor_node
 #### Ensure power to motor is supplied
 ros2 topic pub /motor/cmd std_msgs/msg/String '{"data": "{\"action\": \"move\", \"angle\": 0, \"speed\": 70}"}
 
+
+export PYTHONPATH="/usr/bin/python3"
+which python3
+s
 # Adding new nodes?
 Update setup.py.
 
