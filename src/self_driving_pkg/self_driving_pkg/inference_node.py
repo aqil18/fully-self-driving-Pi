@@ -60,6 +60,7 @@ class LaneInferenceNode(Node):
         steering_angle = self.compute_steering_angle(frame, lane_lines)
         command = self.angle_to_command(steering_angle)
         self.get_logger().info(f"Steering angle: {steering_angle:.2f} | Command: {command}")
+        # This needs to change
         self.motor_pub.publish(String(data=command))
 
         # 7. Publish annotated frame

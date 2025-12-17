@@ -49,7 +49,7 @@ ros2 topic pub /motor/cmd std_msgs/msg/String '{"data": "{\"action\": \"move\", 
 
 export PYTHONPATH="/usr/bin/python3"
 which python3
-s
+
 # Adding new nodes?
 Update setup.py.
 
@@ -62,3 +62,7 @@ Update setup.py.
 # To test camera
 1. Open car utils
 2. Run camera.py
+
+# To test motor
+1. Run Motor.py
+python3 -m self_driving_pkg.car_utils.Motor
