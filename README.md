@@ -66,3 +66,8 @@ Update setup.py.
 # To test motor
 1. Run Motor.py
 python3 -m self_driving_pkg.car_utils.Motor
+
+# To launch
+cd src
+cd launch
+ros2 launch fsd_launch.py
