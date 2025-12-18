@@ -8,6 +8,7 @@ from cv_bridge import CvBridge
 import cv2
 import numpy as np
 import math
+import json
 
 class LaneInferenceNode(Node):
     def __init__(self):
@@ -57,11 +58,21 @@ class LaneInferenceNode(Node):
         combo = cv2.addWeighted(frame, 0.8, lane_frame, 1, 1)
 
         # 6. Calculate steering angle
+        command = "move"
         steering_angle = self.compute_steering_angle(frame, lane_lines)
-        command = self.angle_to_command(steering_angle)
+        speed = 50
         self.get_logger().info(f"Steering angle: {steering_angle:.2f} | Command: {command}")
+        
+        data = {
+            "command": command,
+            "steering_angle": steering_angle,
+            "speed": speed
+        }
+        # Convert the dictionary to a JSON formatted string
+        data = json.dumps(data)
+        
         # This needs to change
-        self.motor_pub.publish(String(data=command))
+        self.motor_pub.publish(String(data=data))
 
         # 7. Publish annotated frame
         annotated_msg = self.bridge.cv2_to_imgmsg(combo, "bgr8")
@@ -125,14 +136,6 @@ class LaneInferenceNode(Node):
         # Positive dx → turn right
         angle = math.degrees(math.atan2(dx, height))
         return angle
-
-    def angle_to_command(self, angle):
-        if angle > 5:
-            return f"Right {angle:.1f}"
-        elif angle < -5:
-            return f"Left {abs(angle):.1f}"
-        else:
-            return "Forward"
 
 def main():
     rclpy.init()
