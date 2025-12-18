@@ -72,7 +72,7 @@ class LaneInferenceNode(Node):
         data = json.dumps(command)
         
         # This needs to change
-        self.motor_pub.publish(String(data=data))
+        self.motor_pub.publish(data)
 
         # 7. Publish annotated frame
         annotated_msg = self.bridge.cv2_to_imgmsg(combo, "bgr8")
