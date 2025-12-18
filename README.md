@@ -71,3 +71,7 @@ python3 -m self_driving_pkg.car_utils.Motor
 cd src
 cd launch
 ros2 launch fsd_launch.py
+
+# ROS2 Camera
+vcgencmd get_camera
+ros2 run v4l2_camera v4l2_camera_node --ros-args -p image_size:="[640, 480]"
