@@ -25,7 +25,7 @@ class MotorActionNode(Node):
     def motor_callback(self, msg):
         """Handle incoming ROS 2 messages."""
         try:
-            command = json.loads(msg.data)
+            command = json.loads(msg)
 
             self.get_logger().info(f"Received motor command: {command}")            
             action = command.get("action", "")

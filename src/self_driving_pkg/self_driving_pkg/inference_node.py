@@ -58,18 +58,18 @@ class LaneInferenceNode(Node):
         combo = cv2.addWeighted(frame, 0.8, lane_frame, 1, 1)
 
         # 6. Calculate steering angle
-        command = "move"
+        action = "move"
         steering_angle = self.compute_steering_angle(frame, lane_lines)
         speed = 50
         self.get_logger().info(f"Steering angle: {steering_angle:.2f} | Command: {command}")
         
-        data = {
-            "command": command,
+        command = {
+            "action": action,
             "steering_angle": steering_angle,
             "speed": speed
         }
         # Convert the dictionary to a JSON formatted string
-        data = json.dumps(data)
+        data = json.dumps(command)
         
         # This needs to change
         self.motor_pub.publish(String(data=data))
