@@ -61,7 +61,7 @@ class LaneInferenceNode(Node):
         action = "move"
         steering_angle = self.compute_steering_angle(frame, lane_lines)
         speed = 50
-        self.get_logger().info(f"Steering angle: {steering_angle:.2f} | Command: {command}")
+        self.get_logger().info(f"Steering angle: {steering_angle:.2f} | Command: {action}")
         
         command = {
             "action": action,
