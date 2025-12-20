@@ -3,7 +3,7 @@
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Image
-from std_msgs.msg import String
+from std_msgs.msg import Int32
 from cv_bridge import CvBridge
 import cv2
 import numpy as np
@@ -14,7 +14,7 @@ class LaneInferenceNode(Node):
     def __init__(self):
         super().__init__('lane_inference_node')
         
-        self.motor_pub = self.create_publisher(String, '/motor/cmd', 10)
+        self.motor_pub = self.create_publisher(Int32, '/motor/cmd', 10)
         self.image_pub = self.create_publisher(Image, '/inference/image_out', 10)
         self.create_subscription(Image, '/camera/image_raw', self.inference_callback, 10)
 
@@ -60,20 +60,12 @@ class LaneInferenceNode(Node):
         # 6. Calculate steering angle
         action = "move"
         steering_angle = self.compute_steering_angle(frame, lane_lines)
-        speed = 50
         self.get_logger().info(f"Steering angle: {steering_angle:.2f} | Command: {action}")
         
-        command = {
-            "action": action,
-            "steering_angle": steering_angle,
-            "speed": speed
-        }
+        msg = Int32()
+        msg.data = steering_angle
         
-        # Convert the dictionary to a JSON formatted string
-        data = json.dumps(command)
-        
-        # This needs to change
-        self.motor_pub.publish(data)
+        self.motor_pub.publish(msg)
 
         # 7. Publish annotated frame
         annotated_msg = self.bridge.cv2_to_imgmsg(combo, "bgr8")
