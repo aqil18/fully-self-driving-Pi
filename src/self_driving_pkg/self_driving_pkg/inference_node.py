@@ -68,6 +68,7 @@ class LaneInferenceNode(Node):
             "steering_angle": steering_angle,
             "speed": speed
         }
+        
         # Convert the dictionary to a JSON formatted string
         data = json.dumps(command)
         
