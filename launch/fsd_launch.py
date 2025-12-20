@@ -4,26 +4,26 @@ from launch_ros.actions import Node
 def generate_launch_description():
     return LaunchDescription([
         Node(
-            package='self_driving_pkg',
-            namespace='test',
-            executable='camera_node',
+            package='v4l2_camera',
+            namespace='fsd',
+            executable='v4l2_camera_node',
             name='camera'
         ),
         Node(
             package='self_driving_pkg',
-            namespace='test',
+            namespace='fsd',
             executable='inference_node',
             name='inference'
         ),
         Node(
             package='self_driving_pkg',
-            namespace='test',
+            namespace='fsd',
             executable='display_node',
             name='display'
         ),
         Node(
             package='self_driving_pkg',
-            namespace='test',
+            namespace='fsd',
             executable='motor_node',
             name='motor'
         )

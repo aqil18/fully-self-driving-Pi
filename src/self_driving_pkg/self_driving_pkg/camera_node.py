@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+## DEPRECATED: Use v4l2_camera_node instead and remove dependency on picamera2
 ## Captures images and publishes them to a topic, e.g., /camera/image_raw.
 
 ## Aim: 

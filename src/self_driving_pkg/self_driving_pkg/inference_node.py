@@ -16,7 +16,7 @@ class LaneInferenceNode(Node):
         
         self.motor_pub = self.create_publisher(Int32, '/motor/cmd', 10)
         self.image_pub = self.create_publisher(Image, '/inference/image_out', 10)
-        self.create_subscription(Image, '/camera/image_raw', self.inference_callback, 10)
+        self.create_subscription(Image, '/image_raw', self.inference_callback, 10)
 
         self.bridge = CvBridge()
         self.get_logger().info("Lane inference node has started!")
