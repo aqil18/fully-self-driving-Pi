@@ -2,4 +2,4 @@
 	name = Aqil F
 	email = aqilfaizal2004@gmail.com
 [credential]
-	helper = "!f() { /home/aqil/.vscode-server/bin/258e40fedc6cb8edf399a463ce3a9d32e7e1f6f3/node /tmp/vscode-remote-containers-426bc2e4-6e48-4ef9-805a-13cb325b6da9.js git-credential-helper $*; }; f"
+	helper = "!f() { /home/aqil/.vscode-server/bin/258e40fedc6cb8edf399a463ce3a9d32e7e1f6f3/node /tmp/vscode-remote-containers-d018072c-5ec7-425b-9c14-d2ea0d35a67c.js git-credential-helper $*; }; f"
