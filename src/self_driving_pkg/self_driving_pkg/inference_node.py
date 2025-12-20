@@ -58,12 +58,11 @@ class LaneInferenceNode(Node):
         combo = cv2.addWeighted(frame, 0.8, lane_frame, 1, 1)
 
         # 6. Calculate steering angle
-        action = "move"
         steering_angle = self.compute_steering_angle(frame, lane_lines)
-        self.get_logger().info(f"Steering angle: {steering_angle:.2f} | Command: {action}")
-        
+        self.get_logger().info(f"Steering angle: {steering_angle:.2f}")
+
         msg = Int32()
-        msg.data = steering_angle
+        msg.data = int(steering_angle)
         
         self.motor_pub.publish(msg)
 
