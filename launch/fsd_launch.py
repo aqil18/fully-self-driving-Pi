@@ -18,12 +18,6 @@ def generate_launch_description():
         Node(
             package='self_driving_pkg',
             namespace='fsd',
-            executable='display_node',
-            name='display'
-        ),
-        Node(
-            package='self_driving_pkg',
-            namespace='fsd',
             executable='motor_node',
             name='motor'
         )

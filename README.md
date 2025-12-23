@@ -75,3 +75,9 @@ ros2 launch fsd_launch.py
 # ROS2 Camera
 vcgencmd get_camera
 ros2 run v4l2_camera v4l2_camera_node --ros-args -p image_size:="[640, 480]"
+
+# Image server
+colcon build --packages-select web_video_server
+source install/setup.bash
+ros2 run web_video_server web_video_server
+https://github.com/RobotWebTools/web_video_server
