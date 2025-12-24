@@ -10,6 +10,12 @@ def generate_launch_description():
             name='camera'
         ),
         Node(
+            package='web_video_server',
+            namespace='fsd',
+            executable='web_video_server',
+            name='web_video_server'
+        ),
+        Node(
             package='self_driving_pkg',
             namespace='fsd',
             executable='inference_node',
