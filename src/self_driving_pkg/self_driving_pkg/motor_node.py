@@ -37,6 +37,8 @@ def main(args=None):
     rclpy.init(args=args)
     node = MotorActionNode()
     rclpy.spin(node)
+    node.motor.move(0, 0)  # Stop the motor on shutdown
+    node.get_logger().info("Shutting down motor action node.")
     node.destroy_node()
     rclpy.shutdown()
 
