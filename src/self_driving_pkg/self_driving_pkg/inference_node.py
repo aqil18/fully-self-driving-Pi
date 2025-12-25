@@ -25,6 +25,7 @@ class LaneInferenceNode(Node):
         self.frame_count = 0
         self.publish_every_n_frames = 7  # choose 5–10
         self.steering_buffer = deque(maxlen=self.publish_every_n_frames)
+        self.smoothed_angle = 0.0
 
         self.get_logger().info("Lane inference node has started!")
 
@@ -85,17 +86,17 @@ class LaneInferenceNode(Node):
 
         #  Publish smoothed steering angle every n frames
         if self.frame_count % self.publish_every_n_frames == 0:
-            smoothed_angle = float(np.mean(self.steering_buffer))
+            self.smoothed_angle = float(np.mean(self.steering_buffer))
 
             msg = Int32()
-            msg.data = int(smoothed_angle)
+            msg.data = int(self.smoothed_angle)
             self.motor_pub.publish(msg)
 
             self.get_logger().info(
-                f"Publishing smoothed steering angle: {smoothed_angle:.2f}"
+                f"Publishing smoothed steering angle: {self.smoothed_angle:.2f}"
             )
-            cv2.putText(combo, f"Steering angle: {smoothed_angle:.2f}", position, font, font_scale, color, thickness, line_type)
 
+        cv2.putText(combo, f"Steering angle: {self.smoothed_angle:.2f}", position, font, font_scale, color, thickness, line_type)
 
         # 7. Publish annotated frame
         annotated_msg = self.bridge.cv2_to_imgmsg(combo, "bgr8")
