@@ -64,17 +64,52 @@ class Motor:
         self._set_wheel_speeds(0, 0, 0, 0)
 
 
-# Example Usage
-if __name__ == "__main__":
+def main():
     motor = Motor()
 
+    print("\nMotor Control Interface")
+    print("------------------------")
+    print("Commands:")
+    print("  move <angle> <speed>   → angle: 0–360, speed: 0–100")
+    print("  rotate <left|right> <speed>")
+    print("  stop")
+    print("  quit\n")
+
     try:
-        motor.move(0, 50)     # Move forward at 50% speed
-        time.sleep(2)
-        motor.move(180, 50)   # Move backward at 50% speed
-        time.sleep(2)
-        motor.rotate("left", 40)  # Rotate left
-        time.sleep(2)
-        motor.stop()          # Stop the robot
+        while True:
+            cmd = input(">> ").strip().lower()
+            if not cmd:
+                continue
+
+            parts = cmd.split()
+
+            if parts[0] == "move" and len(parts) == 3:
+                angle = float(parts[1])
+                speed = float(parts[2])
+                motor.move(angle, speed)
+
+            elif parts[0] == "rotate" and len(parts) == 3:
+                direction = parts[1]
+                speed = float(parts[2])
+                motor.rotate(direction, speed)
+
+            elif parts[0] == "stop":
+                motor.stop()
+
+            elif parts[0] in ("quit", "exit"):
+                motor.stop()
+                break
+
+            else:
+                print("Invalid command.")
+
     except KeyboardInterrupt:
+        pass
+    finally:
         motor.stop()
+        print("\nMotors stopped. Exiting.")
+
+
+if __name__ == "__main__":
+    main()
+
