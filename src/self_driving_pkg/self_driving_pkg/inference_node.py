@@ -68,7 +68,7 @@ class LaneInferenceNode(Node):
         line_type = cv2.LINE_AA # For smoother text
         
         text = f"Steering angle: {steering_angle:.2f}"
-        cv2.putText(frame, text, position, font, font_scale, color, thickness, line_type)
+        cv2.putText(combo, text, position, font, font_scale, color, thickness, line_type)
 
         self.get_logger().info(text)
 
