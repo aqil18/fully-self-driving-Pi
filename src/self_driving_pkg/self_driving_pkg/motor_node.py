@@ -12,7 +12,7 @@ from std_msgs.msg import Int32
 from .car_utils.Motor_api import Motor  # Ensure this path is correct
 import json
 
-
+SPEED = 25  # Default speed percentage
 class MotorActionNode(Node):
     def __init__(self):
         super().__init__('motor_action_node')
@@ -27,8 +27,8 @@ class MotorActionNode(Node):
         try:
             angle = msg.data
             self.get_logger().info(f"Received motor angle: {angle}")            
-            self.motor.move(angle, 50)
-            self.get_logger().info(f'Moving at {angle}° with 50% speed')
+            self.motor.move(angle, speed=SPEED)
+            self.get_logger().info(f'Moving at {angle}° with {SPEED}% speed')
 
         except Exception as e:
             self.get_logger().error(f'Error processing message: {e}')

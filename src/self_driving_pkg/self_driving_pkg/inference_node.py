@@ -59,7 +59,18 @@ class LaneInferenceNode(Node):
 
         # 6. Calculate steering angle
         steering_angle = self.compute_steering_angle(frame, lane_lines)
-        self.get_logger().info(f"Steering angle: {steering_angle:.2f}")
+        # Define text parameters
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        position = (50, 100) # Bottom-left corner of the text
+        font_scale = 1.5
+        color = (0, 0, 255) # Red color in BGR
+        thickness = 2
+        line_type = cv2.LINE_AA # For smoother text
+        
+        text = f"Steering angle: {steering_angle:.2f}"
+        cv2.putText(frame, text, position, font, font_scale, color, thickness, line_type)
+
+        self.get_logger().info(text)
 
         msg = Int32()
         msg.data = int(steering_angle)
