@@ -19,6 +19,12 @@ class LaneInferenceNode(Node):
         self.create_subscription(Image, '/fsd/image_raw', self.inference_callback, 10)
 
         self.bridge = CvBridge()
+        
+        # Temporal smoothing
+        self.frame_count = 0
+        self.publish_every_n_frames = 7  # choose 5–10
+        self.steering_buffer = deque(maxlen=self.publish_every_n_frames)
+
         self.get_logger().info("Lane inference node has started!")
 
     def inference_callback(self, msg):
@@ -59,6 +65,11 @@ class LaneInferenceNode(Node):
 
         # 6. Calculate steering angle
         steering_angle = self.compute_steering_angle(frame, lane_lines)
+        
+        # Store steering angle for smoothing
+        self.steering_buffer.append(steering_angle)
+        self.frame_count += 1
+
         # Define text parameters
         font = cv2.FONT_HERSHEY_SIMPLEX
         position = (50, 100) # Bottom-left corner of the text
@@ -67,15 +78,23 @@ class LaneInferenceNode(Node):
         thickness = 2
         line_type = cv2.LINE_AA # For smoother text
         
-        text = f"Steering angle: {steering_angle:.2f}"
-        cv2.putText(combo, text, position, font, font_scale, color, thickness, line_type)
+    
 
-        self.get_logger().info(text)
+        self.get_logger().info(f"Steering angle: {steering_angle:.2f}")
 
-        msg = Int32()
-        msg.data = int(steering_angle)
-        
-        self.motor_pub.publish(msg)
+        #  Publish smoothed steering angle every n frames
+        if self.frame_count % self.publish_every_n_frames == 0:
+            smoothed_angle = float(np.mean(self.steering_buffer))
+
+            msg = Int32()
+            msg.data = int(smoothed_angle)
+            self.motor_pub.publish(msg)
+
+            self.get_logger().info(
+                f"Publishing smoothed steering angle: {smoothed_angle:.2f}"
+            )
+            cv2.putText(combo, f"Steering angle: {smoothed_angle:.2f}", position, font, font_scale, color, thickness, line_type)
+
 
         # 7. Publish annotated frame
         annotated_msg = self.bridge.cv2_to_imgmsg(combo, "bgr8")
