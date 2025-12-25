@@ -39,7 +39,7 @@ def main(args=None):
     try:
         rclpy.spin(node)
     except KeyboardInterrupt:
-        node.motor.move(0, 0)  # Stop the motor on shutdown
+        node.motor.stop()  # Stop the motor on shutdown
         node.get_logger().info("Shutting down motor action node.")
         node.destroy_node()
         rclpy.shutdown()
