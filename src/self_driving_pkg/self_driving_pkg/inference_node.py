@@ -8,7 +8,8 @@ from cv_bridge import CvBridge
 import cv2
 import numpy as np
 import math
-import json
+from collections import deque
+
 
 class LaneInferenceNode(Node):
     def __init__(self):
