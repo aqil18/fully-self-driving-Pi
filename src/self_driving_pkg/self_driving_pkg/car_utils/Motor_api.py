@@ -36,10 +36,10 @@ class Motor:
         # self.pwm.setMotorPwm(1, max(0, -FL))
         # self.pwm.setMotorPwm(2, max(0, BL))
         # self.pwm.setMotorPwm(3, max(0, -BL))
-        # self.pwm.setMotorPwm(4, max(0, BR))
-        # self.pwm.setMotorPwm(5, max(0, -BR))
-        self.pwm.setMotorPwm(6, max(0, FR))
-        self.pwm.setMotorPwm(7, max(0, -FR))
+        self.pwm.setMotorPwm(4, max(0, BR))
+        self.pwm.setMotorPwm(5, max(0, -BR))
+        # self.pwm.setMotorPwm(6, max(0, FR))
+        # self.pwm.setMotorPwm(7, max(0, -FR))
 
 
     def move(self, angle, speed=50):
