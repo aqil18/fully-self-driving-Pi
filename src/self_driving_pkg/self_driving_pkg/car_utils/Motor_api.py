@@ -17,6 +17,15 @@ class Motor:
     
     def _set_wheel_speeds(self, FL, BL, FR, BR):
         """Set individual wheel speeds."""
+        if self.fl_inverted:
+            FL = -FL
+        if self.fr_inverted:
+            FR = -FR
+        if self.bl_inverted:
+            BL = -BL
+        if self.br_inverted:
+            BR = -BR
+
         self.pwm.setMotorPwm(0, max(0, FL))
         self.pwm.setMotorPwm(1, max(0, -FL))
         self.pwm.setMotorPwm(2, max(0, BL))
