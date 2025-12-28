@@ -32,10 +32,10 @@ class Motor:
         #     FR = BR
         #     BR = temp
         
-        # self.pwm.setMotorPwm(0, max(0, FL))
-        # self.pwm.setMotorPwm(1, max(0, -FL))
-        self.pwm.setMotorPwm(2, max(0, BL))
-        self.pwm.setMotorPwm(3, max(0, -BL))
+        self.pwm.setMotorPwm(0, max(0, FL))
+        self.pwm.setMotorPwm(1, max(0, -FL))
+        # self.pwm.setMotorPwm(2, max(0, BL))
+        # self.pwm.setMotorPwm(3, max(0, -BL))
         # self.pwm.setMotorPwm(4, max(0, BR))
         # self.pwm.setMotorPwm(5, max(0, -BR))
         # self.pwm.setMotorPwm(6, max(0, FR))
