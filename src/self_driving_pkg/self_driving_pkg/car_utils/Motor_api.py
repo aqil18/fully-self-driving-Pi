@@ -27,10 +27,10 @@ class Motor:
         if self.br_inverted:
             BR = -BR
 
-        if self.swap_cross:
-            temp = FR
-            FR = BL
-            BL = temp
+        # if self.swap_cross:
+        #     temp = FR
+        #     FR = BL
+        #     BL = temp
         
         self.pwm.setMotorPwm(0, max(0, FL))
         self.pwm.setMotorPwm(1, max(0, -FL))
