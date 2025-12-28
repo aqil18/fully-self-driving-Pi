@@ -101,6 +101,7 @@ class Motor:
 
 PWM=Motor()          
 def loop(): 
+    # !! BACK RIGHT IS FLIPPED !!
     PWM.setMotorModel(2000,2000,-2000,2000)       #Forward
     time.sleep(3)
     PWM.setMotorModel(-2000,-2000,2000,-2000)   #Back

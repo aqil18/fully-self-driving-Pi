@@ -14,6 +14,7 @@ class Motor:
         self.fl_inverted = False  # Set to True if front-left motor is inverted
         self.br_inverted = False  # Set to True if back-right motor is inverted
         self.bl_inverted = False  # Set to True if back-left motor is inverted
+        self.swap_cross = True
     
     def _set_wheel_speeds(self, FL, BL, FR, BR):
         """Set individual wheel speeds."""
@@ -26,6 +27,11 @@ class Motor:
         if self.br_inverted:
             BR = -BR
 
+        if self.swap_cross:
+            temp = FR
+            FR = BL
+            BL = temp
+        
         self.pwm.setMotorPwm(0, max(0, FL))
         self.pwm.setMotorPwm(1, max(0, -FL))
         self.pwm.setMotorPwm(2, max(0, BL))
