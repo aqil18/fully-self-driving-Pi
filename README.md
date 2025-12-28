@@ -65,7 +65,7 @@ Update setup.py.
 
 # To test motor
 1. Run Motor.py
-python3 -m self_driving_pkg.car_utils.Motor
+python3 -m self_driving_pkg.car_utils.Motor_api
 
 # To launch
 cd src
