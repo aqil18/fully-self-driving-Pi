@@ -12,7 +12,7 @@ class Motor:
         self.adc = Adc()
         self.fr_inverted = False  # Set to True if front-right motor is inverted
         self.fl_inverted = False  # Set to True if front-left motor is inverted
-        self.br_inverted = False  # Set to True if back-right motor is inverted
+        self.br_inverted = True  # Set to True if back-right motor is inverted
         self.bl_inverted = False  # Set to True if back-left motor is inverted
         
     
@@ -53,7 +53,9 @@ class Motor:
         VY = int(speed * math.cos(rad_angle)) # forward/backward component
         VX = int(speed * math.sin(rad_angle)) # left/right component (used here as turning)
         
-        # Differential drive formula
+        # Differential drive formula to make the robot move in the desired direction
+        # left_side  = forward + turn
+        # right_side = forward - turn
         FL = VY + VX
         BL = VY + VX
         FR = VY - VX
