@@ -34,12 +34,12 @@ class Motor:
         
         self.pwm.setMotorPwm(0, max(0, FL))
         self.pwm.setMotorPwm(1, max(0, -FL))
-        self.pwm.setMotorPwm(2, max(0, BL))
-        self.pwm.setMotorPwm(3, max(0, -BL))
-        self.pwm.setMotorPwm(4, max(0, FR))
-        self.pwm.setMotorPwm(5, max(0, -FR))
-        self.pwm.setMotorPwm(6, max(0, BR))
-        self.pwm.setMotorPwm(7, max(0, -BR))
+        # self.pwm.setMotorPwm(2, max(0, BL))
+        # self.pwm.setMotorPwm(3, max(0, -BL))
+        # self.pwm.setMotorPwm(4, max(0, FR))
+        # self.pwm.setMotorPwm(5, max(0, -FR))
+        # self.pwm.setMotorPwm(6, max(0, BR))
+        # self.pwm.setMotorPwm(7, max(0, -BR))
 
     def move(self, angle, speed=50):
         """
@@ -49,11 +49,13 @@ class Motor:
         :param speed: Speed percentage (0-100)
         """
         speed = int(speed * 40.95)  # Convert to motor duty range (0-4095)
+        # Python trig functions use radians, so this is required.
         rad_angle = math.radians(angle)
         
         # Calculate wheel speeds based on direction
-        VY = int(speed * math.cos(rad_angle))
-        VX = int(speed * math.sin(rad_angle))
+        # Speed is a magnitude here
+        VY = int(speed * math.cos(rad_angle)) # forward/backward component
+        VX = int(speed * math.sin(rad_angle)) # left/right component (used here as turning)
         
         # Differential drive formula
         FL = VY + VX
