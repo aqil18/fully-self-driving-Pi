@@ -14,6 +14,7 @@ class Motor:
         self.fl_inverted = False  # Set to True if front-left motor is inverted
         self.br_inverted = True  # Set to True if back-right motor is inverted
         self.bl_inverted = False  # Set to True if back-left motor is inverted
+        
     
     def _set_wheel_speeds(self, FL, BL, FR, BR):
         """Set individual wheel speeds."""
@@ -54,9 +55,9 @@ class Motor:
         
         # Differential drive formula
         FL = VY + VX
-        BL = VY - VX
+        BL = VY + VX
         FR = VY - VX
-        BR = VY + VX
+        BR = VY - VX
         
         self._set_wheel_speeds(FL, BL, FR, BR)
         
