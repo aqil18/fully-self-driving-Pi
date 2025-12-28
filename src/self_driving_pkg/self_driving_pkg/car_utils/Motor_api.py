@@ -10,11 +10,11 @@ class Motor:
         self.pwm = PCA9685(0x40, debug=True)
         self.pwm.setPWMFreq(50)
         self.adc = Adc()
-        self.fr_inverted = True  # Set to True if front-right motor is inverted
+        self.fr_inverted = False  # Set to True if front-right motor is inverted
         self.fl_inverted = False  # Set to True if front-left motor is inverted
         self.br_inverted = False  # Set to True if back-right motor is inverted
         self.bl_inverted = False  # Set to True if back-left motor is inverted
-        self.swap_cross = True
+        self.swap_right = True
     
     def _set_wheel_speeds(self, FL, BL, FR, BR):
         """Set individual wheel speeds."""
@@ -27,17 +27,17 @@ class Motor:
         if self.br_inverted:
             BR = -BR
 
-        # if self.swap_cross:
-        #     temp = FR
-        #     FR = BL
-        #     BL = temp
+        if self.swap_right:
+            temp = FR
+            FR = BR
+            BR = temp
         
-        # self.pwm.setMotorPwm(0, max(0, FL))
-        # self.pwm.setMotorPwm(1, max(0, -FL))
-        # self.pwm.setMotorPwm(2, max(0, BL))
-        # self.pwm.setMotorPwm(3, max(0, -BL))
-        # self.pwm.setMotorPwm(4, max(0, FR))
-        # self.pwm.setMotorPwm(5, max(0, -FR))
+        self.pwm.setMotorPwm(0, max(0, FL))
+        self.pwm.setMotorPwm(1, max(0, -FL))
+        self.pwm.setMotorPwm(2, max(0, BL))
+        self.pwm.setMotorPwm(3, max(0, -BL))
+        self.pwm.setMotorPwm(4, max(0, FR))
+        self.pwm.setMotorPwm(5, max(0, -FR))
         self.pwm.setMotorPwm(6, max(0, BR))
         self.pwm.setMotorPwm(7, max(0, -BR))
 
