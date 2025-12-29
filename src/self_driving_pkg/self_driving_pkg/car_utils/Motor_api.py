@@ -12,7 +12,7 @@ class Motor:
         self.adc = Adc()
         self.fr_inverted = False  # Set to True if front-right motor is inverted
         self.fl_inverted = False  # Set to True if front-left motor is inverted
-        self.br_inverted = True  # Set to True if back-right motor is inverted
+        self.br_inverted = False  # Set to True if back-right motor is inverted
         self.bl_inverted = False  # Set to True if back-left motor is inverted
         
     
