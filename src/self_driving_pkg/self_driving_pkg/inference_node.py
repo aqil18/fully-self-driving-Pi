@@ -69,6 +69,7 @@ class LaneInferenceNode(Node):
         # 6. Calculate steering angle
         steering_angle = self.compute_steering_angle(frame, lane_lines)
         
+        
         # Store steering angle for smoothing
         self.steering_buffer.append(steering_angle)
         self.frame_count += 1
@@ -88,9 +89,12 @@ class LaneInferenceNode(Node):
         #  Publish smoothed steering angle every n frames
         if self.frame_count % self.publish_every_n_frames == 0:
             self.smoothed_angle = float(np.mean(self.steering_buffer))
+            Kp = 1.8  # start here, tune
+            command_angle = Kp * self.smoothed_angle
+
 
             msg = Int32()
-            msg.data = int(self.smoothed_angle)
+            msg.data = int(command_angle)
             self.motor_pub.publish(msg)
 
             self.get_logger().info(
