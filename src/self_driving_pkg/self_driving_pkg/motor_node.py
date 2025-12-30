@@ -12,7 +12,7 @@ from std_msgs.msg import Int32
 from .car_utils.Motor_api import Motor  # Ensure this path is correct
 import json
 
-SPEED = 25  # Default speed percentage
+SPEED = 10  # Default speed percentage
 class MotorActionNode(Node):
     def __init__(self):
         super().__init__('motor_action_node')
