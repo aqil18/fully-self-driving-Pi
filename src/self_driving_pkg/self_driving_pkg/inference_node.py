@@ -159,7 +159,7 @@ class LaneInferenceNode(Node):
 
         # Approximate steering angle
         # Positive dx → turn right
-        angle = math.degrees(math.atan2(dx, height))
+        angle = -math.degrees(math.atan2(dx, height))
         return angle
 
 def main():
