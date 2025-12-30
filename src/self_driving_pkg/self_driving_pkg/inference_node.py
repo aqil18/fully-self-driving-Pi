@@ -43,10 +43,11 @@ class LaneInferenceNode(Node):
 
         # 3. Region of interest (bottom half of the image)
         mask = np.zeros_like(edges)
+        roi_top = int(height * 0.35)
         polygon = np.array([[
             (0, height),
-            (0, height//2),
-            (width, height//2),
+            (0, roi_top),
+            (width, roi_top),
             (width, height)
         ]], np.int32)
         cv2.fillPoly(mask, polygon, 255)
@@ -126,14 +127,14 @@ class LaneInferenceNode(Node):
         if left_lines:
             slope, intercept = np.mean(left_lines, axis=0)
             y1 = height
-            y2 = int(height*0.6)
+            y2 = int(height*0.35)
             x1 = int((y1 - intercept)/slope)
             x2 = int((y2 - intercept)/slope)
             lane_lines.append([x1,y1,x2,y2])
         if right_lines:
             slope, intercept = np.mean(right_lines, axis=0)
             y1 = height
-            y2 = int(height*0.6)
+            y2 = int(height*0.35)
             x1 = int((y1 - intercept)/slope)
             x2 = int((y2 - intercept)/slope)
             lane_lines.append([x1,y1,x2,y2])
