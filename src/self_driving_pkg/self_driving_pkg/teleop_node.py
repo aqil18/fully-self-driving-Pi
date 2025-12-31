@@ -17,7 +17,7 @@ class TeleopNode(Node):
         self.steering = 0
 
         self.max_steer = 30
-        self.step = 5
+        self.step = 2
 
         self.timer = self.create_timer(0.05, self.loop)  # 20 Hz
 
