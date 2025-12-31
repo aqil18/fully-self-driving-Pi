@@ -8,9 +8,9 @@ import termios
 import tty
 import select
 
-class TeleopKeyboard(Node):
+class TeleopNode(Node):
     def __init__(self):
-        super().__init__('teleop_keyboard')
+        super().__init__('teleop_node')
 
         self.steer_pub = self.create_publisher(Int32, '/motor/cmd', 10)
 
@@ -49,7 +49,7 @@ class TeleopKeyboard(Node):
 
 def main():
     rclpy.init()
-    node = TeleopKeyboard()
+    node = TeleopNode()
     rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()
