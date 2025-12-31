@@ -128,7 +128,69 @@ def main():
         motor.stop()
         print("\nMotors stopped. Exiting.")
 
+def main2():
+    motor = Motor()
+
+    import sys
+    import termios
+    import tty
+    import select
+    import time
+
+    # Keyboard setup
+    settings = termios.tcgetattr(sys.stdin)
+
+    speed = 40          # base speed %
+    max_steer = 30      # degrees
+    steer = 0
+    steer_step = 3
+    angle = 0           # 0 = forward, 180 = backward
+
+    def get_key():
+        tty.setraw(sys.stdin.fileno())
+        rlist, _, _ = select.select([sys.stdin], [], [], 0.05)
+        key = sys.stdin.read(1) if rlist else None
+        termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)
+        return key
+
+    print("\nWASD Motor Teleop")
+    print("----------------")
+    print("W/S : forward / backward")
+    print("A/D : steer left / right")
+    print("SPACE : stop")
+    print("CTRL+C : quit\n")
+
+    try:
+        while True:
+            key = get_key()
+
+            if key == 'w':
+                angle = 0
+            elif key == 's':
+                angle = 180
+            elif key == 'a':
+                steer = max(steer - steer_step, -max_steer)
+            elif key == 'd':
+                steer = min(steer + steer_step, max_steer)
+            elif key == ' ':
+                motor.stop()
+                steer = 0
+                continue
+            elif key == '\x03':  # Ctrl+C
+                break
+
+            # Combine forward/backward + steering
+            motor.move(angle + steer, speed)
+
+            time.sleep(0.05)  # ~20 Hz loop
+
+    except KeyboardInterrupt:
+        pass
+    finally:
+        motor.stop()
+        print("\nMotors stopped. Exiting.")
+
 
 if __name__ == "__main__":
-    main()
+    main2()
 
