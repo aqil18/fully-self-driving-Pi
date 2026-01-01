@@ -140,11 +140,12 @@ def main2():
     # Keyboard setup
     settings = termios.tcgetattr(sys.stdin)
 
-    speed = 40          # base speed %
-    max_steer = 30      # degrees
-    steer = 0
-    steer_step = 3
-    angle = 0           # 0 = forward, 180 = backward
+    max_speed = 40 
+    speed = 0
+    step_speed = 10        # base speed %
+    max_angle = 30      # degrees
+    angle = 0
+    angle_step = 2
 
     def get_key():
         tty.setraw(sys.stdin.fileno())
@@ -165,22 +166,23 @@ def main2():
             key = get_key()
 
             if key == 'w':
-                angle = 0
+                speed = min(speed + step_speed, max_speed)
             elif key == 's':
-                angle = 180
+                speed = max(speed - step_speed, -max_speed)
             elif key == 'a':
-                steer = max(steer - steer_step, -max_steer)
+                angle = max(steer - steer_step, -max_steer)
             elif key == 'd':
-                steer = min(steer + steer_step, max_steer)
+                angle = min(steer + steer_step, max_steer)
             elif key == ' ':
                 motor.stop()
-                steer = 0
+                speed = 0
+                angle = 0
                 continue
             elif key == '\x03':  # Ctrl+C
                 break
 
             # Combine forward/backward + steering
-            motor.move(angle + steer, speed)
+            motor.move(angle, speed)
 
             time.sleep(0.05)  # ~20 Hz loop
 
