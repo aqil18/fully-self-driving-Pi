@@ -167,8 +167,10 @@ def main2():
 
             if key == 'w':
                 speed = min(speed + step_speed, max_speed)
+                angle = 0
             elif key == 's':
                 speed = max(speed - step_speed, max_speed)
+                angle = 180
             elif key == 'a':
                 angle = max(angle - angle_step, -max_angle)
             elif key == 'd':
