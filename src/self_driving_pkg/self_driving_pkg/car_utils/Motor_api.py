@@ -167,10 +167,8 @@ def main2():
 
             if key == 'w':
                 speed = min(speed + step_speed, max_speed)
-                angle = 0
             elif key == 's':
-                speed = max(speed + step_speed, max_speed)
-                angle = 180
+                speed = max(speed - step_speed, max_speed)
             elif key == 'a':
                 angle = max(angle - angle_step, -max_angle)
             elif key == 'd':
@@ -182,6 +180,9 @@ def main2():
                 continue
             elif key == '\x03':  # Ctrl+C
                 break
+            
+            if speed < 0:
+                speed = -speed
 
             # Combine forward/backward + steering
             motor.move(angle, speed)
