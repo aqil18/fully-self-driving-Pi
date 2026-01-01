@@ -142,7 +142,7 @@ def main2():
 
     max_speed = 40 
     speed = 0
-    step_speed = 10        # base speed %
+    step_speed = 10     # base speed %
     max_angle = 30      # degrees
     angle = 0
     angle_step = 20
@@ -160,17 +160,15 @@ def main2():
     print("A/D : steer left / right")
     print("SPACE : stop")
     print("CTRL+C : quit\n")
-
+    
     try:
         while True:
             key = get_key()
 
             if key == 'w':
                 speed = min(speed + step_speed, max_speed)
-                angle = 0
             elif key == 's':
-                speed = max(speed - step_speed, max_speed)
-                angle = 180
+                speed = max(speed - step_speed, -max_speed)
             elif key == 'a':
                 angle = max(angle - angle_step, -max_angle)
             elif key == 'd':
@@ -185,6 +183,7 @@ def main2():
             
             if speed < 0:
                 speed = -speed
+                angle = -angle + 180
 
             # Combine forward/backward + steering
             motor.move(angle, speed)
