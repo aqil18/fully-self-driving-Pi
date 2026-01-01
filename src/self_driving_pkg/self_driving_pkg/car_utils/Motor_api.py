@@ -145,7 +145,7 @@ def main2():
     step_speed = 10        # base speed %
     max_angle = 30      # degrees
     angle = 0
-    angle_step = 10
+    angle_step = 20
 
     def get_key():
         tty.setraw(sys.stdin.fileno())
