@@ -168,11 +168,11 @@ def main2():
             if key == 'w':
                 speed = min(speed + step_speed, max_speed)
             elif key == 's':
-                speed = max(speed - step_speed, -max_speed)
+                speed = max(speed + step_speed, max_speed)
             elif key == 'a':
                 angle = max(angle - angle_step, -max_angle)
             elif key == 'd':
-                angle = min(angle + steer_step, max_angle)
+                angle = min(angle + angle_step, max_angle)
             elif key == ' ':
                 motor.stop()
                 speed = 0
