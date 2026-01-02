@@ -143,7 +143,7 @@ def main2():
     max_speed = 40 
     speed = 0
     step_speed = 10     # base speed %
-    max_angle = 30      # degrees
+    max_angle = 90      # degrees
     angle = 0
     angle_step = 20
 
@@ -183,13 +183,14 @@ def main2():
 
     
             cmdAngle = angle
+            cmdSpeed = abs(speed)
             if speed < 0:
                 cmdAngle = -cmdAngle + 180
 
 
-            print(f"Speed: {speed}%, Angle: {cmdAngle}°")
+            print(f"Speed: {cmdSoeed}%, Angle: {cmdAngle}°")
             # Combine forward/backward + steering
-            motor.move(angle, abs(speed))
+            motor.move(cmdAngle, abs(speed))
 
             time.sleep(0.05)  # ~20 Hz loop
 
