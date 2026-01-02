@@ -188,7 +188,7 @@ def main2():
                 cmdAngle = -cmdAngle + 180
 
 
-            print(f"Speed: {cmdSoeed}%, Angle: {cmdAngle}°")
+            print(f"Speed: {cmdSpeed}%, Angle: {cmdAngle}°")
             # Combine forward/backward + steering
             motor.move(cmdAngle, abs(speed))
 
