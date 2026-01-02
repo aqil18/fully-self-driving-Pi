@@ -182,11 +182,10 @@ def main2():
                 break
             
             if speed < 0:
-                speed = -speed
                 angle = -angle + 180
 
             # Combine forward/backward + steering
-            motor.move(angle, speed)
+            motor.move(angle, abs(speed))
 
             time.sleep(0.05)  # ~20 Hz loop
 
