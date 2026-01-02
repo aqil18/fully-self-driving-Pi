@@ -180,9 +180,11 @@ def main2():
                 continue
             elif key == '\x03':  # Ctrl+C
                 break
-            
+
+    
+            cmdAngle = angle
             if speed < 0:
-                angle = -angle + 180
+                cmdAngle = -cmdAngle + 180
 
             # Combine forward/backward + steering
             motor.move(angle, abs(speed))
