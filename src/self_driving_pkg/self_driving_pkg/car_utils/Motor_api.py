@@ -147,17 +147,6 @@ def main2():
     angle = 0
     angle_step = 20
 
-    def get_key():
-        tty.setraw(sys.stdin.fileno())
-        rlist, _, _ = select.select([sys.stdin], [], [], 0.05)
-        key = sys.stdin.read(1) if rlist else None
-        termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)
-        return key
-
-    # Source - https://stackoverflow.com/a
-    # Posted by Flux, modified by community. See post 'Timeline' for change history
-    # Retrieved 2026-01-04, License - CC BY-SA 4.0
-
     def getch():
         import sys, termios, tty
 
