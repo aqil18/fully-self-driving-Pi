@@ -192,7 +192,6 @@ def main2():
             # Combine forward/backward + steering
             motor.move(cmdAngle, abs(speed))
 
-            time.sleep(0.05)  # ~20 Hz loop
 
     except KeyboardInterrupt:
         pass
