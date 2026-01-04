@@ -154,6 +154,22 @@ def main2():
         termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)
         return key
 
+    # Source - https://stackoverflow.com/a
+    # Posted by Flux, modified by community. See post 'Timeline' for change history
+    # Retrieved 2026-01-04, License - CC BY-SA 4.0
+
+    def getch():
+        import sys, termios, tty
+
+        fd = sys.stdin.fileno()
+        orig = termios.tcgetattr(fd)
+
+        try:
+            tty.setcbreak(fd)  # or tty.setraw(fd) if you prefer raw mode's behavior.
+            return sys.stdin.read(1)
+        finally:
+            termios.tcsetattr(fd, termios.TCSAFLUSH, orig)
+
     print("\nWASD Motor Teleop")
     print("----------------")
     print("W/S : forward / backward")
@@ -163,7 +179,7 @@ def main2():
     
     try:
         while True:
-            key = input("Key pressed: ").lower()
+            key = getch()
 
             if key == 'w':
                 speed = min(speed + step_speed, max_speed)
