@@ -45,6 +45,9 @@ class TeleopNode(Node):
         elif key == ' ':
             self.steering = 0
 
+        self.get_logger().info(
+            f'Steering: {self.steering} degrees'
+        )
         self.steer_pub.publish(Int32(data=self.steering))
 
 def main():
