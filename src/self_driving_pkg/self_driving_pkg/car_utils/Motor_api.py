@@ -149,7 +149,7 @@ def main2():
 
     def get_key():
         tty.setraw(sys.stdin.fileno())
-        rlist, _, _ = select.select([sys.stdin], [], [], 0.01)
+        rlist, _, _ = select.select([sys.stdin], [], [], 0.05)
         key = sys.stdin.read(1) if rlist else None
         termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)
         return key
@@ -163,7 +163,7 @@ def main2():
     
     try:
         while True:
-            key = get_key()
+            key = input("Key pressed: ").lower()
 
             if key == 'w':
                 speed = min(speed + step_speed, max_speed)
