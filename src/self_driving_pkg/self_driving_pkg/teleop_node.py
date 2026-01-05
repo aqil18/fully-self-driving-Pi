@@ -21,34 +21,80 @@ class TeleopNode(Node):
 
         self.timer = self.create_timer(0.05, self.loop)  # 20 Hz
 
-        self.settings = termios.tcgetattr(sys.stdin)
 
-        self.get_logger().info(
-            "Keyboard teleop:\n"
-            "  A/D : steer left/right\n"
-        )
+    def getch():
+        import sys, termios, tty
 
-    def get_key(self):
-        tty.setraw(sys.stdin.fileno())
-        rlist, _, _ = select.select([sys.stdin], [], [], 0)
-        key = sys.stdin.read(1) if rlist else None
-        termios.tcsetattr(sys.stdin, termios.TCSADRAIN, self.settings)
-        return key
+        fd = sys.stdin.fileno()
+        orig = termios.tcgetattr(fd)
 
-    def loop(self):
-        key = self.get_key()
+        try:
+            tty.setcbreak(fd)  # or tty.setraw(fd) if you prefer raw mode's behavior.
+            return sys.stdin.read(1)
+        finally:
+            termios.tcsetattr(fd, termios.TCSAFLUSH, orig)
 
-        if key == 'a':
-            self.steering = max(self.steering - self.step, -self.max_steer)
-        elif key == 'd':
-            self.steering = min(self.steering + self.step, self.max_steer)
-        elif key == ' ':
-            self.steering = 0
 
-        self.get_logger().info(
-            f'Steering: {self.steering} degrees'
-        )
-        self.steer_pub.publish(Int32(data=self.steering))
+
+    def main2():
+        speed = 0
+        step_speed = 10     # base speed %
+        max_speed = 40 
+        angle = 0
+        angle_step = 20
+        max_angle = 90      # degrees
+
+        
+        print("\nWASD Motor Teleop")
+        print("----------------")
+        print("W/S : forward / backward")
+        print("A/D : steer left / right")
+        print("SPACE : stop")
+        print("CTRL+C : quit\n")
+        
+        try:
+            while True:
+                key = getch()
+
+                if key == 'w':
+                    speed = min(speed + step_speed, max_speed)
+                elif key == 's':
+                    speed = max(speed - step_speed, -max_speed)
+                elif key == 'a':
+                    angle = max(angle - angle_step, -max_angle)
+                elif key == 'd':
+                    angle = min(angle + angle_step, max_angle)
+                elif key == ' ':
+                    motor.stop()
+                    speed = 0
+                    angle = 0
+                    continue
+                elif key == '\x03':  # Ctrl+C
+                    break
+
+        
+                cmdAngle = angle
+                cmdSpeed = abs(speed)
+                if speed < 0:
+                    cmdAngle = -cmdAngle + 180
+
+
+                print(f"Speed: {cmdSpeed}%, Angle: {cmdAngle}°")
+                # Combine forward/backward + steering
+                # !! publish speed and angle motor.move(cmdAngle, cmdSpeed)
+
+            
+            self.get_logger().info(
+                f'Steering: {self.steering} degrees'
+            )
+            self.steer_pub.publish(Int32(data=self.steering))
+
+
+        except KeyboardInterrupt:
+            pass
+        finally:
+            motor.stop()
+            print("\nMotors stopped. Exiting.")
 
 def main():
     rclpy.init()

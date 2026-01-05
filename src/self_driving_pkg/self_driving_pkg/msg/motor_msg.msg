@@ -1,3 +1,2 @@
-int32 action
 int32 speed
-string angle
+int32 angle

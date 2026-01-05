@@ -131,15 +131,6 @@ def main():
 def main2():
     motor = Motor()
 
-    import sys
-    import termios
-    import tty
-    import select
-    import time
-
-    # Keyboard setup
-    settings = termios.tcgetattr(sys.stdin)
-
     max_speed = 40 
     speed = 0
     step_speed = 10     # base speed %
@@ -195,7 +186,7 @@ def main2():
 
             print(f"Speed: {cmdSpeed}%, Angle: {cmdAngle}°")
             # Combine forward/backward + steering
-            motor.move(cmdAngle, abs(speed))
+            motor.move(cmdAngle, cmdSpeed)
 
 
     except KeyboardInterrupt:
