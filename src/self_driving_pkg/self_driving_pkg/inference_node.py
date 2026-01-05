@@ -3,7 +3,7 @@
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Image
-from std_msgs.msg import Int32
+from interfaces.msg import Motor
 from cv_bridge import CvBridge
 import cv2
 import numpy as np
@@ -14,8 +14,8 @@ from collections import deque
 class LaneInferenceNode(Node):
     def __init__(self):
         super().__init__('lane_inference_node')
-        
-        self.motor_pub = self.create_publisher(Int32, '/motor/cmd', 10)
+
+        self.motor_pub = self.create_publisher(Motor, '/motor/cmd', 10)
         self.image_pub = self.create_publisher(Image, '/inference/image_out', 10)
         self.create_subscription(Image, '/fsd/image_raw', self.inference_callback, 10)
 
@@ -93,8 +93,9 @@ class LaneInferenceNode(Node):
             command_angle = Kp * self.smoothed_angle
 
 
-            msg = Int32()
-            msg.data = int(command_angle)
+            msg = Motor()
+            msg.angle = int(command_angle)
+            msg.speed = int(15)
             self.motor_pub.publish(msg)
 
             self.get_logger().info(

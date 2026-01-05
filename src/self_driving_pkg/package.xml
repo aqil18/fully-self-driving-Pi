@@ -22,6 +22,7 @@
   <exec_depend>rclpy</exec_depend>
   <exec_depend>python-smbus</exec_depend>
   <exec_depend>python3-gpiozero</exec_depend> -->
+  <exec_depend>interfaces</exec_depend>
 
 
   <test_depend>ament_copyright</test_depend>

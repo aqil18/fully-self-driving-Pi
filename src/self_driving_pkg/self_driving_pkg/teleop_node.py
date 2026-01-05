@@ -2,7 +2,7 @@
 
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import Int32
+from interfaces.msg import Motor
 import sys
 import termios
 import tty
@@ -12,7 +12,7 @@ class TeleopNode(Node):
     def __init__(self):
         super().__init__('teleop_node')
 
-        self.steer_pub = self.create_publisher(Int32, '/motor/cmd', 10)
+        self.steer_pub = self.create_publisher(Motor, '/motor/cmd', 10)
 
 
         self.speed = 0
@@ -72,15 +72,14 @@ class TeleopNode(Node):
             if self.speed < 0:
                 cmdAngle = -cmdAngle + 180
 
-
-            # Combine forward/backward + steering
-            # !! publish speed and angle motor.move(cmdAngle, cmdSpeed)
-
             self.get_logger().info(
                 f"Speed: {cmdSpeed}%, Angle: {cmdAngle}°"
             )
-            self.steer_pub.publish(Int32(data=self.angle))
-            
+            msg = Motor()
+            msg.speed = cmdSpeed
+            msg.angle = cmdAngle
+            self.steer_pub.publish(msg)
+
 
 
 def main():
