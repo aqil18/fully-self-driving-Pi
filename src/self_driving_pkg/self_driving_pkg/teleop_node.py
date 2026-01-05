@@ -14,15 +14,19 @@ class TeleopNode(Node):
 
         self.steer_pub = self.create_publisher(Int32, '/motor/cmd', 10)
 
-        self.steering = 0
 
-        self.max_steer = 30
-        self.step = 2
+        self.speed = 0
+        self.step_speed = 10     # base speed %
+        self.max_speed = 40
+        self.angle = 0
+        self.angle_step = 20
+        self.max_angle = 90      # degrees
 
-        self.timer = self.create_timer(0.05, self.loop)  # 20 Hz
+        # Do we need a timer here?
+        # self.timer = self.create_timer(0.05, self.loop)  # 20 Hz
+        self.loop()
 
-
-    def getch():
+    def getch(self):
         import sys, termios, tty
 
         fd = sys.stdin.fileno()
@@ -36,15 +40,7 @@ class TeleopNode(Node):
 
 
 
-    def main2():
-        speed = 0
-        step_speed = 10     # base speed %
-        max_speed = 40 
-        angle = 0
-        angle_step = 20
-        max_angle = 90      # degrees
-
-        
+    def loop(self):
         print("\nWASD Motor Teleop")
         print("----------------")
         print("W/S : forward / backward")
@@ -54,28 +50,27 @@ class TeleopNode(Node):
         
         try:
             while True:
-                key = getch()
+                key = self.getch()
 
                 if key == 'w':
-                    speed = min(speed + step_speed, max_speed)
+                    self.speed = min(self.speed + self.step_speed, self.max_speed)
                 elif key == 's':
-                    speed = max(speed - step_speed, -max_speed)
+                    self.speed = max(self.speed - self.step_speed, -self.max_speed)
                 elif key == 'a':
-                    angle = max(angle - angle_step, -max_angle)
+                    self.angle = max(self.angle - self.angle_step, -self.max_angle)
                 elif key == 'd':
-                    angle = min(angle + angle_step, max_angle)
+                    self.angle = min(self.angle + self.angle_step, self.max_angle)
                 elif key == ' ':
-                    motor.stop()
-                    speed = 0
-                    angle = 0
+                    self.speed = 0
+                    self.angle = 0
                     continue
                 elif key == '\x03':  # Ctrl+C
                     break
 
-        
-                cmdAngle = angle
-                cmdSpeed = abs(speed)
-                if speed < 0:
+
+                cmdAngle = self.angle
+                cmdSpeed = abs(self.speed)
+                if self.speed < 0:
                     cmdAngle = -cmdAngle + 180
 
 
@@ -83,18 +78,14 @@ class TeleopNode(Node):
                 # Combine forward/backward + steering
                 # !! publish speed and angle motor.move(cmdAngle, cmdSpeed)
 
-            
             self.get_logger().info(
-                f'Steering: {self.steering} degrees'
+                f'Steering: {self.angle} degrees'
             )
-            self.steer_pub.publish(Int32(data=self.steering))
-
-
+            self.steer_pub.publish(Int32(data=self.angle))
         except KeyboardInterrupt:
             pass
         finally:
-            motor.stop()
-            print("\nMotors stopped. Exiting.")
+            self.get_logger().info("Teleop node shut down.")
 
 def main():
     rclpy.init()

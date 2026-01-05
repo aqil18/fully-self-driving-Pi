@@ -117,3 +117,4 @@ ros2 run self_driving_pkg image_test_node
 ros2 run self_driving_pkg image_test_node
 ros2 run self_driving_pkg image_test_node
 source /home/aqil/envx/bin/activate
+source /home/aqil/envx/bin/activate
