@@ -118,3 +118,51 @@ ros2 run self_driving_pkg image_test_node
 ros2 run self_driving_pkg image_test_node
 source /home/aqil/envx/bin/activate
 source /home/aqil/envx/bin/activate
+ls
+source setup.sh
+ros2
+source setup.shj
+source setup.sh
+ros2 run self_driving_pkg teleop_node
+source setup.sh
+ros2 run self_driving_pkg teleop_node
+ros2 run self_driving_pkg teleop_node
+source setup.sh
+ros2 run self_driving_pkg teleop_node
+cd src
+ros2 pkg create --build-type ament_cmake --license Apache-2.0 interfaces
+cd interfaces
+mkdir srv
+cd ..
+cd ..
+colcon build --packages-select intercaces
+colcon build --packages-select interfaces
+source install/setup.bash
+ros2 interface show interfaces/msg/Motor
+soruce setup.sh
+source setup.sh
+ros2 run self_driving_pkg teleop_node
+colcon build --packages-select interfaces 
+rm -rf build/interfaces install/interfaces log/interfaces
+colcon build --packages-select interfaces 
+ros2 run self_driving_pkg teleop_node
+cd launch
+ros2 launch data_collect_launch.py
+source /home/aqil/envx/bin/activate
+source /home/aqil/envx/bin/activate
+tmux
+source setup.sh
+ros2 topic echo /motor/cmd
+ros2
+ros2 topic echo
+ros2 topic list
+ros2 topic echo /motor/cmd
+ros2 topic echo /motor/cmd
+ros2 topic echo /motor/cmd
+source setup.sh
+source setup.sh
+source setup.sh
+colcon build --packages-select interfaces 
+colcon build --packages-select interfaces
+source setup.sh
+ros2 topic echo /motor/cmd
