@@ -10,12 +10,6 @@ def generate_launch_description():
             name='camera'
         ),
         Node(
-            package='self_driving_pkg',
-            namespace='fsd',
-            executable='teleop_node',
-            name='teleop'
-        ),
-        Node(
             package='web_video_server',
             namespace='fsd',
             executable='web_video_server',
