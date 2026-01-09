@@ -48,11 +48,11 @@ class ImagePublisher(Node):
 def main(args=None):
     rclpy.init(args=args)
     # home/aqil on docker
-    # home/ws on local machine
-    image_directory = '/home/aqil/fully-self-driving-Pi/src/self_driving_pkg/self_driving_pkg/example_images'  # Change this path to your image folder
+    # home/ws/fully-self-driving-Pi on local machine ?
+    image_directory = '/home/aqil/src/self_driving_pkg/self_driving_pkg/example_images'  # Change this path to your image folder
     
     topic = '/fsd/image_raw'
-    publish_rate = 1  # Hz
+    publish_rate = 2  # Hz
 
     image_publisher = ImagePublisher(image_directory, topic, publish_rate)
     rclpy.spin(image_publisher)

@@ -25,5 +25,6 @@ setup(
         'image_test_node = self_driving_pkg.image_test_node:main',
         'display_node = self_driving_pkg.display_node:main',
         'teleop_node = self_driving_pkg.teleop_node:main',
+        'dataset_recorder = self_driving_pkg.dataset_recorder:main',
     ]}
 )

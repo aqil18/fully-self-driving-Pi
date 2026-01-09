@@ -166,3 +166,81 @@ colcon build --packages-select interfaces
 colcon build --packages-select interfaces
 source setup.sh
 ros2 topic echo /motor/cmd
+source /home/aqil/envx/bin/activate
+ros2 run self_driving_pkg teleop_node
+source setup.sh
+ros2
+ros2 run self_driving_pkg teleop_node
+ros2 run self_driving_pkg teleop_node
+source /home/aqil/envx/bin/activate
+source setup.sh
+ros2 run self_driving_pkg image_test_node
+ls
+cd ..
+cd ..
+ls
+cd ..
+ls
+cd home
+ls
+cd aqil
+ls
+cd src
+ls
+cd self_driving_pkg/
+cd self_driving_pkg/
+cd example_images/
+ls
+cd ..
+cd ..
+cd ..
+cd ..
+cd ..
+cd aqil
+cd src
+cd self_driving_pkg/
+cd ..
+cd ..
+source setup.sh
+ros2 run self_driving_pkg image_test_node
+ros2 topic echo /motor/cmd
+source setup.sh
+cd launch
+ros2 launch test_data_collect.py
+cd ..
+source setup.sh
+cd launch
+ros2 launch test_data_collect.py
+ros2 launch test_data_collect.py
+ros2 launch test_data_collect.py
+ros2 launch test_data_collect.py
+ros2 launch test_data_collect.py
+cd ..
+git pull
+source /home/aqil/envx/bin/activate
+ls
+source setup.sh
+ros2 bag record   /fsd/image_raw   /motor/cmd
+ros2 bag info rosbag2_2026_01_07-16_15_57
+ros2 bag play rosbag2_2026_01_07-16_15_57
+ros2 bag play rosbag2_2026_01_07-16_15_57
+source /home/aqil/envx/bin/activate
+source /home/aqil/envx/bin/activate
+source /home/aqil/envx/bin/activate
+source /home/aqil/envx/bin/activate
+source /home/aqil/envx/bin/activate
+source /home/aqil/envx/bin/activate
+source /home/aqil/envx/bin/activate
+source /home/aqil/envx/bin/activate
+source /home/aqil/envx/bin/activate
+source /home/aqil/envx/bin/activate
+source /home/aqil/envx/bin/activate
+git commit ammend
+git commit -amend
+git commit --amend
+git rebase --abort
+source /home/aqil/envx/bin/activate
+source /home/aqil/envx/bin/activate
+source /home/aqil/envx/bin/activate
+source /home/aqil/envx/bin/activate
+source /home/aqil/envx/bin/activate
