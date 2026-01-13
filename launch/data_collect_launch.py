@@ -17,6 +17,12 @@ def generate_launch_description():
         ),
         Node(
             package='self_driving_pkg',
+            namespace='test',
+            executable='dataset_recorder',
+            name='recorder'
+        ),
+        Node(
+            package='self_driving_pkg',
             namespace='fsd',
             executable='motor_node',
             name='motor'

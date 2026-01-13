@@ -6,7 +6,7 @@ def generate_launch_description():
         Node(
             package='self_driving_pkg',
             namespace='test',
-            executable='image_test_node',
+            executable='',
             name='image_test'
         ),
         Node(

@@ -244,3 +244,6 @@ source /home/aqil/envx/bin/activate
 source /home/aqil/envx/bin/activate
 source /home/aqil/envx/bin/activate
 source /home/aqil/envx/bin/activate
+source /home/aqil/envx/bin/activate
+source setup.sh
+source /home/aqil/envx/bin/activate
