@@ -6,11 +6,11 @@ params.json
 .onCreateCommandMarker
 .postCreateCommandMarker
 .updateContentCommandMarker
-/.cache
-/.dotnet
-/.gnupg
-/.local
-/.vscode-server
+/rpi/.cache
+/rpi/.dotnet
+/rpi/.gnupg
+/rpi/.local
+/rpi/.vscode-server
 
 # ros2 build files
 build 
