@@ -32,7 +32,7 @@ class Config:
     num_workers: int = 2
 
     # saving
-    save_path: str = "model.pt"
+    save_path: str = "models/model.pt"
 
 
 cfg = Config()
