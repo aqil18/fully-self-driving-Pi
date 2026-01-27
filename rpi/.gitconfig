@@ -1,0 +1,9 @@
+[user]
+	name = Aqil F
+	email = aqilfaizal2004@gmail.com
+[http]
+	postBuffer = 157286400
+[core]
+	autocrlf = input
+[credential]
+	helper = "!f() { /home/aqil/.vscode-server/bin/258e40fedc6cb8edf399a463ce3a9d32e7e1f6f3/node /tmp/vscode-remote-containers-51c1f97c-b661-4131-bd41-c5ffdd8436cc.js git-credential-helper $*; }; f"

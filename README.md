@@ -81,3 +81,20 @@ colcon build --packages-select web_video_server
 source install/setup.bash
 ros2 run web_video_server web_video_server
 https://github.com/RobotWebTools/web_video_server
+
+# How to obtain the dataset 
+Batteries in
+Find IP address on local wifi (Connect to a display)
+ssh aqil@128.189.245.208 (Hasnt changed in 2 weeks)
+Turn on battery power and remove main power cable
+Turn on load power
+Cd into FSD from 2 terminals make sure to cd into rpi code
+Git pull
+Source setup files in both source setup.sh
+Record the dataset from the pi
+ros2 launch data_collect_launch.py (from launch folder)
+ros2 run self_driving_pkg teleop_node
+To view camera output go to
+http://128.189.245.208:8080/stream_viewer?topic=/fsd/image_raw
+From a terminal thats not on the pi run 
+rsync -av --progress aqil@128.189.245.208:/home/aqil/fully-self-driving-Pi/rpi/launch/datasets ~/Downloads/
