@@ -6,4 +6,4 @@
 [core]
 	autocrlf = input
 [credential]
-	helper = "!f() { /home/aqil/.vscode-server/bin/258e40fedc6cb8edf399a463ce3a9d32e7e1f6f3/node /tmp/vscode-remote-containers-51c1f97c-b661-4131-bd41-c5ffdd8436cc.js git-credential-helper $*; }; f"
+	helper = "!f() { /home/aqil/.vscode-server/bin/258e40fedc6cb8edf399a463ce3a9d32e7e1f6f3/node /tmp/vscode-remote-containers-a1dc1caf-1298-40d8-ad2c-46a43b00ab21.js git-credential-helper $*; }; f"

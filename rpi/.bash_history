@@ -252,3 +252,11 @@ source /home/aqil/envx/bin/activate
 source /home/aqil/envx/bin/activate
 source /home/aqil/envx/bin/activate
 source /home/aqil/envx/bin/activate
+source setup.sh
+cd launch
+ros2 launch data_collect_launch.py
+source /home/aqil/envx/bin/activate
+source /home/aqil/envx/bin/activate
+source /home/aqil/envx/bin/activate
+source /home/aqil/envx/bin/activate
+source /home/aqil/envx/bin/activate
