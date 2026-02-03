@@ -16,8 +16,9 @@ from torch.utils.data import Dataset, DataLoader
 # -----------------------------
 @dataclass
 class Config:
-    csv_path: str = "datasets/2026-01-13_08-27-03/labels/labels.csv"
-    images_dir: str = "datasets/2026-01-13_08-27-03/images"
+    path: str = "datasets/2026-01-27_08-20-41"
+    csv_path: str = path + "/labels/labels.csv"
+    images_dir: str = path + "/images"
 
     # image preprocessing
     out_h: int = 66
