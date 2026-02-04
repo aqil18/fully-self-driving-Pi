@@ -9,6 +9,12 @@ import cv2
 import numpy as np
 import math
 from collections import deque
+import torch
+from models import train
+
+
+PATH = '/models/model.pt' # The path where your model weights are saved
+
 
 
 class LaneInferenceNode(Node):
@@ -27,6 +33,13 @@ class LaneInferenceNode(Node):
         self.steering_buffer = deque(maxlen=self.publish_every_n_frames)
         self.smoothed_angle = 0.0
 
+        # Convolutional Neural Network
+        model = train.PiPilotNet()
+        # Use weights_only=True for best practice when loading weights
+        model.load_state_dict(torch.load(PATH, weights_only=True))
+        model.eval()
+
+        
         self.get_logger().info("Lane inference node has started!")
 
     def inference_callback(self, msg):
@@ -34,37 +47,7 @@ class LaneInferenceNode(Node):
         frame = self.bridge.imgmsg_to_cv2(msg, "bgr8")
         height, width = frame.shape[:2]
 
-        # 1. Convert to grayscale and blur
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        blur = cv2.GaussianBlur(gray, (5,5), 0)
 
-        # 2. Edge detection
-        edges = cv2.Canny(blur, 50, 150)
-
-        # 3. Region of interest (bottom half of the image)
-        mask = np.zeros_like(edges)
-        roi_top = int(height * 0.35)
-        polygon = np.array([[
-            (0, height),
-            (0, roi_top),
-            (width, roi_top),
-            (width, height)
-        ]], np.int32)
-        cv2.fillPoly(mask, polygon, 255)
-        cropped_edges = cv2.bitwise_and(edges, mask)
-
-        # 4. Hough Transform to detect lines
-        lines = cv2.HoughLinesP(cropped_edges, 1, np.pi/180, 50, minLineLength=50, maxLineGap=50)
-
-        lane_lines = self.average_slope_intercept(frame, lines)
-
-        # 5. Draw lane lines
-        lane_frame = np.zeros_like(frame)
-        for line in lane_lines:
-            x1, y1, x2, y2 = line
-            cv2.line(lane_frame, (x1,y1), (x2,y2), (0,255,0), 5)
-
-        combo = cv2.addWeighted(frame, 0.8, lane_frame, 1, 1)
 
         # 6. Calculate steering angle
         steering_angle = self.compute_steering_angle(frame, lane_lines)
