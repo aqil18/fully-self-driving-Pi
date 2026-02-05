@@ -35,120 +35,97 @@ class LaneInferenceNode(Node):
 
         # Convolutional Neural Network
         model = train.PiPilotNet()
+        ckpt = torch.load(PATH, map_location=self.device)
         # Use weights_only=True for best practice when loading weights
-        model.load_state_dict(torch.load(PATH, weights_only=True))
+        model.load_state_dict(ckpt["model_state"])
         model.eval()
 
         
         self.get_logger().info("Lane inference node has started!")
 
     def inference_callback(self, msg):
-        # Convert ROS Image to OpenCV
+        # 1. Convert ROS Image to OpenCV BGR
         frame = self.bridge.imgmsg_to_cv2(msg, "bgr8")
-        height, width = frame.shape[:2]
+        h, w = frame.shape[:2]
 
+        # 2. Preprocess exactly like DrivingDataset._preprocess
+        #    - crop lower 60%
+        top = int(h * 0.40)
+        cropped = frame[top:, :]
 
+        #    - resize to (out_w, out_h)
+        resized = cv2.resize(
+            cropped,
+            (self.out_w, self.out_h),
+            interpolation=cv2.INTER_AREA
+        )
 
-        # 6. Calculate steering angle
-        steering_angle = self.compute_steering_angle(frame, lane_lines)
-        
-        
-        # Store steering angle for smoothing
+        #    - BGR -> RGB, normalize to [0,1]
+        rgb = cv2.cvtColor(resized, cv2.COLOR_BGR2RGB).astype(np.float32) / 255.0
+
+        #    - HWC -> CHW
+        chw = np.transpose(rgb, (2, 0, 1))  # (3, 66, 200)
+
+        #    - numpy -> torch tensor, add batch dim
+        x = torch.from_numpy(chw).unsqueeze(0).to(self.device)  # (1, 3, 66, 200)
+
+        # 3. Run model
+        with torch.no_grad():
+            pred_norm = self.model(x).item()  # in [-1, 1] because of tanh
+
+        # 4. Map normalized output to degrees (or whatever your servo expects)
+        #    If your labels in CSV were already in [-1,1], this maps to ±max_steer_deg.
+        steering_angle = float(pred_norm * self.max_steer_deg)
+
+        # 5. Temporal smoothing
         self.steering_buffer.append(steering_angle)
         self.frame_count += 1
 
-        # Define text parameters
-        font = cv2.FONT_HERSHEY_SIMPLEX
-        position = (50, 100) # Bottom-left corner of the text
-        font_scale = 1.5
-        color = (0, 0, 255) # Red color in BGR
-        thickness = 2
-        line_type = cv2.LINE_AA # For smoother text
-        
-    
+        # Log raw prediction
+        self.get_logger().info(f"Raw model steering (deg): {steering_angle:.2f}")
 
-        self.get_logger().info(f"Steering angle: {steering_angle:.2f}")
-
-        #  Publish smoothed steering angle every n frames
+        # 6. Publish smoothed steering angle every N frames
         if self.frame_count % self.publish_every_n_frames == 0:
             self.smoothed_angle = float(np.mean(self.steering_buffer))
-            Kp = 1.8  # start here, tune
+
+            # Simple proportional control (tune Kp!)
+            Kp = 1.8
             command_angle = Kp * self.smoothed_angle
 
-
-            msg = Motor()
-            msg.angle = int(command_angle)
-            msg.speed = int(15)
-            self.motor_pub.publish(msg)
+            motor_msg = Motor()
+            motor_msg.angle = int(command_angle)
+            motor_msg.speed = int(15)  # tune as you like
+            self.motor_pub.publish(motor_msg)
 
             self.get_logger().info(
-                f"Publishing smoothed steering angle: {self.smoothed_angle:.2f}"
+                f"Publishing smoothed steering angle: {self.smoothed_angle:.2f} deg "
+                f"(command: {command_angle:.2f})"
             )
 
-        cv2.putText(combo, f"Steering angle: {self.smoothed_angle:.2f}", position, font, font_scale, color, thickness, line_type)
+        # 7. Draw text on the original frame (or on cropped if you prefer)
+        combo = frame.copy()
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        position = (50, 100)
+        font_scale = 1.5
+        color = (0, 0, 255)
+        thickness = 2
+        line_type = cv2.LINE_AA
 
-        # 7. Publish annotated frame
+        cv2.putText(
+            combo,
+            f"Steer: {self.smoothed_angle:.2f} deg",
+            position,
+            font,
+            font_scale,
+            color,
+            thickness,
+            line_type,
+        )
+
+        # 8. Publish annotated image
         annotated_msg = self.bridge.cv2_to_imgmsg(combo, "bgr8")
         self.image_pub.publish(annotated_msg)
 
-    # Helper functions
-    def average_slope_intercept(self, frame, lines):
-        left_lines = []
-        right_lines = []
-
-        if lines is None:
-            return []
-
-        for line in lines:
-            for x1,y1,x2,y2 in line:
-                if x2 - x1 == 0:
-                    continue
-                slope = (y2 - y1) / (x2 - x1)
-                intercept = y1 - slope*x1
-                if slope < -0.3:
-                    left_lines.append((slope, intercept))
-                elif slope > 0.3:
-                    right_lines.append((slope, intercept))
-
-        lane_lines = []
-        height = frame.shape[0]
-        if left_lines:
-            slope, intercept = np.mean(left_lines, axis=0)
-            y1 = height
-            y2 = int(height*0.35)
-            x1 = int((y1 - intercept)/slope)
-            x2 = int((y2 - intercept)/slope)
-            lane_lines.append([x1,y1,x2,y2])
-        if right_lines:
-            slope, intercept = np.mean(right_lines, axis=0)
-            y1 = height
-            y2 = int(height*0.35)
-            x1 = int((y1 - intercept)/slope)
-            x2 = int((y2 - intercept)/slope)
-            lane_lines.append([x1,y1,x2,y2])
-
-        return lane_lines
-
-    def compute_steering_angle(self, frame, lane_lines):
-        height, width, _ = frame.shape
-        if not lane_lines:
-            return 0.0
-
-        # Calculate midpoint between lane lines at bottom
-        x_bottom = []
-        for x1,y1,x2,y2 in lane_lines:
-            x_bottom.append(x1)
-            x_bottom.append(x2)
-        lane_center = np.mean(x_bottom)
-
-        # Image center
-        center = width / 2
-        dx = lane_center - center
-
-        # Approximate steering angle
-        # Positive dx → turn right
-        angle = -math.degrees(math.atan2(dx, height))
-        return angle
 
 def main():
     rclpy.init()
