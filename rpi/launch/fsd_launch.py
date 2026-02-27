@@ -18,7 +18,7 @@ def generate_launch_description():
         Node(
             package='self_driving_pkg',
             namespace='fsd',
-            executable='inference_node',
+            executable='detection_node',
             name='inference'
         ),
         Node(
