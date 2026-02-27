@@ -10,7 +10,7 @@ import numpy as np
 import math
 from collections import deque
 import torch
-from models import train
+from .models import train
 
 
 PATH = '/models/model.pt' # The path where your model weights are saved
