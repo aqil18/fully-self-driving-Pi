@@ -2,6 +2,8 @@
 echo -e "\nSetting up ROS2"
 source /opt/ros/kilted/setup.bash
 
+ros2
+
 echo -e "\nBuilding packages"
 colcon build --packages-select interfaces
 colcon build --packages-select self_driving_pkg --symlink-install
