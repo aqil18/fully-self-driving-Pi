@@ -10,7 +10,7 @@ import numpy as np
 import math
 from collections import deque
 import torch
-from .models import train
+from .models import PiPilotNet
 
 
 PATH = '/models/model.pt' # The path where your model weights are saved
@@ -33,11 +33,14 @@ class LaneInferenceNode(Node):
         self.steering_buffer = deque(maxlen=self.publish_every_n_frames)
         self.smoothed_angle = 0.0
 
-        # Convolutional Neural Network
-        model = train.PiPilotNet()
+        # Convolutional Neural Network - 
+        # create an untrained model and then load the parameters onto it
+        model = PiPilotNet()
+        # Parameters are stored in state_dict
         ckpt = torch.load(PATH, map_location=self.device)
         # Use weights_only=True for best practice when loading weights
         model.load_state_dict(ckpt["model_state"])
+        # Set the model to evaluation mode
         model.eval()
 
         
@@ -71,6 +74,7 @@ class LaneInferenceNode(Node):
 
         # 3. Run model
         with torch.no_grad():
+            # giving the model my input
             pred_norm = self.model(x).item()  # in [-1, 1] because of tanh
 
         # 4. Map normalized output to degrees (or whatever your servo expects)
