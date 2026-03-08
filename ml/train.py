@@ -16,20 +16,27 @@ from torch.utils.data import Dataset, DataLoader
 # -----------------------------
 @dataclass
 class Config:
+    ### Paths
+    # Adjust the dateset to be used here
     path: str = "datasets/2026-01-27_08-20-41"
     csv_path: str = path + "/labels/labels.csv"
     images_dir: str = path + "/images"
 
-    # image preprocessing
+    ### Image preprocessing
     out_h: int = 66
     out_w: int = 200
 
-    # training
+    ### Training hyperparameters
+    # Allows for reproducible random nubmers
     seed: int = 42
-    batch_size: int = 64
-    lr: float = 1e-3
+    # Number of examples before updating model weights
+    batch_size: int = 64 
+    # Controls how big the weight updates are
+    learning_rate: float = 1e-3 
+    # Number of times the model has seen the dataset
     epochs: int = 8
     val_frac: float = 0.15  # last 15% used as val
+    # Number of CPU proccesses preparing the data 
     num_workers: int = 2
 
     # saving
@@ -164,6 +171,7 @@ class DrivingDataset(Dataset):
 # -----------------------------
 def run_epoch(model, loader, optimizer, device, train: bool):
     if train:
+        # where does this go
         model.train()
     else:
         model.eval()
@@ -196,19 +204,23 @@ def main():
     set_seed(cfg.seed)
 
     if not os.path.exists(cfg.csv_path):
-        raise FileNotFoundError(f"Missing {cfg.csv_path}. Create it as filename,steering.")
-
+        raise FileNotFoundError(f"Missing {cfg.csv_path}.")
+    
+    ## Read in csv of image, steering angle, throttle
+    # Copies csv into panda data frame
     df = pd.read_csv(cfg.csv_path)
-    required_cols = {"filename", "steering"}
+    required_cols = {"filename", "steering", "throttle"}
     if not required_cols.issubset(df.columns):
         raise ValueError(f"CSV must contain columns: {required_cols}. Found: {list(df.columns)}")
 
-    # chronological split: first part train, last part val
+    ## Copies and splits into training and validation data frame
+    # Chronological split: first part train, last part val
     n = len(df)
     n_val = max(1, int(math.floor(n * cfg.val_frac)))
     train_df = df.iloc[: n - n_val].copy()
     val_df = df.iloc[n - n_val :].copy()
 
+    ## Create a torch legal dataset object
     train_ds = DrivingDataset(train_df, cfg.images_dir, cfg.out_h, cfg.out_w, augment=True)
     val_ds = DrivingDataset(val_df, cfg.images_dir, cfg.out_h, cfg.out_w, augment=False)
 
@@ -222,7 +234,7 @@ def main():
                             num_workers=cfg.num_workers, pin_memory=(device == "cuda"))
 
     model = PiPilotNet().to(device)
-    optimizer = torch.optim.Adam(model.parameters(), lr=cfg.lr)
+    optimizer = torch.optim.Adam(model.parameters(), lr=cfg.learning_rate)
 
     best_val = float("inf")
 

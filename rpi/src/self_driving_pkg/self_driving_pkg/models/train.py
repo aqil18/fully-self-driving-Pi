@@ -164,7 +164,6 @@ class DrivingDataset(Dataset):
 # -----------------------------
 def run_epoch(model, loader, optimizer, device, train: bool):
     if train:
-        # where does this go
         model.train()
     else:
         model.eval()
