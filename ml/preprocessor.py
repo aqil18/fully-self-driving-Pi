@@ -1,0 +1,22 @@
+import cv2
+import np    
+
+def preprocess(self, bgr: np.ndarray) -> np.ndarray:
+        """
+        Simple & safe preprocess:
+        - crop lower 60% (road-ish)
+        - resize to (out_w, out_h)
+        - convert BGR->RGB
+        - normalize to [0,1]
+        """
+        h, w = bgr.shape[:2]
+
+        # crop: keep bottom 60%
+        top = int(h * 0.40)
+        cropped = bgr[top:, :]
+    
+        # Resized
+        resized = cv2.resize(cropped, (self.out_w, self.out_h), interpolation=cv2.INTER_AREA)
+        # RGB
+        rgb = cv2.cvtColor(resized, cv2.COLOR_BGR2RGB).astype(np.float32) / 255.0
+        return rgb

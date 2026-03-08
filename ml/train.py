@@ -4,7 +4,7 @@ import math
 import pandas as pd
 import numpy as np
 from dataclasses import dataclass
-
+from .preprocessor import preprocess 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -114,24 +114,8 @@ class DrivingDataset(Dataset):
     def __len__(self):
         return len(self.df)
 
-    def _preprocess(self, bgr: np.ndarray) -> np.ndarray:
-        """
-        Simple & safe preprocess:
-        - crop lower 60% (road-ish)
-        - resize to (out_w, out_h)
-        - convert BGR->RGB
-        - normalize to [0,1]
-        """
-        h, w = bgr.shape[:2]
-
-        # crop: keep bottom 60%
-        top = int(h * 0.40)
-        cropped = bgr[top:, :]
-
-        resized = cv2.resize(cropped, (self.out_w, self.out_h), interpolation=cv2.INTER_AREA)
-        rgb = cv2.cvtColor(resized, cv2.COLOR_BGR2RGB).astype(np.float32) / 255.0
-        return rgb
-
+    ### Adjusts some examples to counteract some results
+    ### ! This may do more harm than good
     def _augment(self, rgb: np.ndarray, steering: float):
         # brightness jitter
         if np.random.rand() < 0.5:
@@ -146,16 +130,20 @@ class DrivingDataset(Dataset):
         return rgb, steering
 
     def __getitem__(self, idx):
+        # Gets the path of image, steering angle and throttle
         row = self.df.iloc[idx]
         fname = row["filename"]
         steering = float(row["steering"])
+        throttle = float(row["throttle"])
 
+        # Reads in image
         path = os.path.join(self.images_dir, fname)
         bgr = cv2.imread(path, cv2.IMREAD_COLOR)
         if bgr is None:
             raise FileNotFoundError(f"Could not read image: {path}")
-
-        rgb = self._preprocess(bgr)
+        
+        # Preprocesses and augments the image
+        rgb = preprocess(bgr)
         if self.augment:
             rgb, steering = self._augment(rgb, steering)
 
@@ -163,7 +151,8 @@ class DrivingDataset(Dataset):
         chw = np.transpose(rgb, (2, 0, 1))
         x = torch.from_numpy(chw).float()
         y = torch.tensor([steering], dtype=torch.float32)
-        return x, y
+        z = torch.tensor([throttle], dtype=torch.float32)
+        return x, y, z
 
 
 # -----------------------------
@@ -206,21 +195,21 @@ def main():
     if not os.path.exists(cfg.csv_path):
         raise FileNotFoundError(f"Missing {cfg.csv_path}.")
     
-    ## Read in csv of image, steering angle, throttle
+    ### Read in csv of image, steering angle, throttle
     # Copies csv into panda data frame
     df = pd.read_csv(cfg.csv_path)
     required_cols = {"filename", "steering", "throttle"}
     if not required_cols.issubset(df.columns):
         raise ValueError(f"CSV must contain columns: {required_cols}. Found: {list(df.columns)}")
 
-    ## Copies and splits into training and validation data frame
+    ### Copies and splits into training and validation data frame
     # Chronological split: first part train, last part val
     n = len(df)
     n_val = max(1, int(math.floor(n * cfg.val_frac)))
     train_df = df.iloc[: n - n_val].copy()
     val_df = df.iloc[n - n_val :].copy()
 
-    ## Create a torch legal dataset object
+    ### Create a torch legal dataset object
     train_ds = DrivingDataset(train_df, cfg.images_dir, cfg.out_h, cfg.out_w, augment=True)
     val_ds = DrivingDataset(val_df, cfg.images_dir, cfg.out_h, cfg.out_w, augment=False)
 
