@@ -57,12 +57,15 @@ class LaneInferenceNode(Node):
 
         # 3. Run model
         with torch.no_grad():
-            # giving the model my input
-            pred_norm = self.model(x).item()  # in [-1, 1] because of tanh
+            # Giving the model my input and getting an output tensor
+            pred_steering, pred_throttle = self.model(x)[0] 
+            pred_steering = pred_steering.item()
+            pred_throttle = pred_throttle.item()
 
         # 4. Map normalized output to degrees (or whatever your servo expects)
         #    If your labels in CSV were already in [-1,1], this maps to ±max_steer_deg.
-        steering_angle = float(pred_norm * self.max_steer_deg)
+        steering_angle = float(pred_steering * self.max_steer_deg)
+        throttle = float(pred_throttle * self.max_throttle)
 
         # 5. Temporal smoothing
         self.steering_buffer.append(steering_angle)
@@ -81,7 +84,7 @@ class LaneInferenceNode(Node):
 
             motor_msg = Motor()
             motor_msg.angle = int(command_angle)
-            motor_msg.speed = int(15)  # tune as you like
+            motor_msg.speed = int(throttle)
             self.motor_pub.publish(motor_msg)
 
             self.get_logger().info(
@@ -89,7 +92,7 @@ class LaneInferenceNode(Node):
                 f"(command: {command_angle:.2f})"
             )
 
-        # 7. Draw text on the original frame (or on cropped if you prefer)
+        # 7. Draw text on the original frame
         combo = frame.copy()
         font = cv2.FONT_HERSHEY_SIMPLEX
         position = (50, 100)

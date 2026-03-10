@@ -24,17 +24,20 @@ class PiPilotNet(nn.Module):
         self.fc1 = nn.Linear(1, 100)  # placeholder; we replace after infer
         self.fc2 = nn.Linear(100, 50)
         self.fc3 = nn.Linear(50, 10)
-        self.fc4 = nn.Linear(10, 1)
+        self.fc4 = nn.Linear(10, 2) # 2 Outputs - steering and throttle
 
     def _ensure_fc1(self, x):
         if self._flatten_dim is None:
+            # CNN output must be flattened as it has a 3d array 
+            # -> convert into 1d array
             self._flatten_dim = x.shape[1]
             self.fc1 = nn.Linear(self._flatten_dim, 100).to(x.device)
     
 
     ### forward defines which layesrs are data passes through and in what order
     def forward(self, x):
-        ### Relu is the activation function used
+        ### ReLu is the activation function used
+        # Rectified Linear unit -> ReLU(x) = max(0, x)
         x = F.relu(self.conv1(x))
         x = F.relu(self.conv2(x))
         x = F.relu(self.conv3(x))
@@ -47,6 +50,11 @@ class PiPilotNet(nn.Module):
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
         x = F.relu(self.fc3(x))
-        steering = torch.tanh(self.fc4(x))  # [-1, 1]
-        return steering
+
+        out = self.fc4(x)   # shape: (B, 2)
+        
+        steering = torch.tanh(out[:, 0:1])   # keep in [-1, 1]
+        throttle = torch.sigmoid(out[:, 1:2])  # keep in [0, 1]
+
+        return steering, throttle
 
