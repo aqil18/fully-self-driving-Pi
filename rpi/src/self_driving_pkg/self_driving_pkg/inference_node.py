@@ -16,8 +16,6 @@ from ml.preprocessor import PreProcessor
 
 from config import Config
 
-PATH = '/models/model.pt' # The path where your model weights are saved
-
 
 
 class LaneInferenceNode(Node):
@@ -41,14 +39,14 @@ class LaneInferenceNode(Node):
         self.model = PiPilotNet()
         self.preprocessor = PreProcessor()
         # Parameters are stored in state_dict
-        ckpt = torch.load(PATH, map_location=self.device)
+        ckpt = torch.load(self.cfg.model_path, map_location=self.device)
         # Use weights_only=True for best practice when loading weights
         self.model.load_state_dict(ckpt["model_state"])
         # Set the model to evaluation mode
         self.model.eval()
 
         # RPI settings
-        self.config = Config()
+        self.cfg = Config()
         
         self.get_logger().info("Lane inference node has started!")
 
@@ -68,8 +66,8 @@ class LaneInferenceNode(Node):
 
         # 4. Map normalized output to degrees (or whatever your servo expects)
         #    If your labels in CSV were already in [-1,1], this maps to ±max_steer_deg.
-        steering_angle = float(pred_steering * self.config.max_angle)
-        throttle = float(pred_throttle * self.config.max_throttle)
+        steering_angle = float(pred_steering * self.cfg.max_angle)
+        throttle = float(pred_throttle * self.cfg.max_throttle)
 
         # 5. Temporal smoothing
         self.steering_buffer.append(steering_angle)

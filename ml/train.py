@@ -107,8 +107,15 @@ def run_epoch(model, loader, optimizer, device, train: bool):
         if train:
             optimizer.zero_grad()
 
-        pred = model(x)
-        loss = mse(pred, y)
+        pred = model(x)   # shape: (B, 2)
+        
+        print(pred)
+
+        pred_steering, pred_throttle = pred[0] 
+
+        loss_steering = mse(pred_steering, y)
+        loss_throttle = mse(pred_throttle, z)
+        loss = 0.7 * loss_steering + 0.3 * loss_throttle
 
         if train:
             loss.backward()
@@ -118,7 +125,6 @@ def run_epoch(model, loader, optimizer, device, train: bool):
         total_n += x.size(0)
 
     return total_loss / max(1, total_n)
-
 
 def main():
     set_seed(cfg.seed)
