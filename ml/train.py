@@ -4,7 +4,7 @@ import math
 import pandas as pd
 import numpy as np
 from dataclasses import dataclass
-from preprocessor import preprocess 
+from preprocessor import PreProcessor 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -22,10 +22,6 @@ class Config:
     csv_path: str = path + "/labels/labels.csv"
     images_dir: str = path + "/images"
 
-    ### Image preprocessing
-    out_h: int = 66
-    out_w: int = 200
-
     ### Training hyperparameters
     # Allows for reproducible random nubmers
     seed: int = 42
@@ -34,7 +30,7 @@ class Config:
     # Controls how big the weight updates are
     learning_rate: float = 1e-3 
     # Number of times the model has seen the dataset
-    epochs: int = 8
+    epochs: int = 1
     val_frac: float = 0.15  # last 15% used as val
     # Number of CPU proccesses preparing the data 
     num_workers: int = 2
@@ -110,12 +106,11 @@ class PiPilotNet(nn.Module):
 # Dataset
 # -----------------------------
 class DrivingDataset(Dataset):
-    def __init__(self, df: pd.DataFrame, images_dir: str, out_h: int, out_w: int, augment: bool):
+    def __init__(self, df: pd.DataFrame, images_dir: str, preprossor: PreProcessor, augment: bool):
         self.df = df.reset_index(drop=True)
         self.images_dir = images_dir
-        self.out_h = out_h
-        self.out_w = out_w
         self.augment = augment
+        self.preprocessor = preprossor
 
     def __len__(self):
         return len(self.df)
@@ -149,7 +144,7 @@ class DrivingDataset(Dataset):
             raise FileNotFoundError(f"Could not read image: {path}")
         
         # Preprocesses and augments the image
-        rgb = preprocess(bgr)
+        rgb = self.preprocessor.preprocess(bgr)
         if self.augment:
             rgb, steering = self._augment(rgb, steering)
 
@@ -179,9 +174,10 @@ def run_epoch(model, loader, optimizer, device, train: bool):
     total_n = 0
     mse = nn.MSELoss()
 
-    for x, y in loader:
+    for x, y, z in loader:
         x = x.to(device)
         y = y.to(device)
+        z = z.to(device)
 
         if train:
             optimizer.zero_grad()
@@ -201,7 +197,7 @@ def run_epoch(model, loader, optimizer, device, train: bool):
 
 def main():
     set_seed(cfg.seed)
-
+    preprocessor = PreProcessor()
     if not os.path.exists(cfg.csv_path):
         raise FileNotFoundError(f"Missing {cfg.csv_path}.")
     
@@ -221,8 +217,8 @@ def main():
 
     ### Create a torch legal dataset object
     # NOTE: Torch requires object to have getitem and len methods
-    train_ds = DrivingDataset(train_df, cfg.images_dir, cfg.out_h, cfg.out_w, augment=True)
-    val_ds = DrivingDataset(val_df, cfg.images_dir, cfg.out_h, cfg.out_w, augment=False)
+    train_ds = DrivingDataset(train_df, cfg.images_dir, preprocessor, augment=True)
+    val_ds = DrivingDataset(val_df, cfg.images_dir, preprocessor, augment=False)
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     print(f"Using device: {device}")
@@ -257,8 +253,8 @@ def main():
     test_row = val_df.iloc[-1]
     test_path = os.path.join(cfg.images_dir, test_row["filename"])
     bgr = cv2.imread(test_path, cv2.IMREAD_COLOR)
-    ds_tmp = DrivingDataset(val_df.iloc[-1:].copy(), cfg.images_dir, cfg.out_h, cfg.out_w, augment=False)
-    x, y = ds_tmp[0]
+    ds_tmp = DrivingDataset(val_df.iloc[-1:].copy(), cfg.images_dir, preprocessor, augment=False)
+    x, y, z = ds_tmp[0]
     x = x.unsqueeze(0).to(device)
 
     model.eval()
@@ -268,6 +264,7 @@ def main():
     print("\nQuick test:")
     print(f"Image: {test_row['filename']}")
     print(f"GT steering:  {float(test_row['steering']): .3f}")
+    print(f"GT throttle:  {float(test_row['throttle']): .3f}")
     print(f"Pred steering:{pred: .3f}")
 
 
