@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 # -----------------------------
-# Config
+# ML Config
 # -----------------------------
 @dataclass
 class Config:
