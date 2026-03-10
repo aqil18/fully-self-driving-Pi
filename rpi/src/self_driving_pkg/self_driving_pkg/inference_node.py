@@ -10,8 +10,9 @@ import numpy as np
 import math
 from collections import deque
 import torch
-from .models.train import PiPilotNet
-## import preprocessor
+
+from ml.pipilotnet import PiPilotNet
+from ml.preprocessor import PreProcessor
 
 PATH = '/models/model.pt' # The path where your model weights are saved
 
@@ -35,13 +36,14 @@ class LaneInferenceNode(Node):
 
         # Convolutional Neural Network - 
         # create an untrained model and then load the parameters onto it
-        model = PiPilotNet()
+        self.model = PiPilotNet()
+        self.preprocessor = PreProcessor()
         # Parameters are stored in state_dict
         ckpt = torch.load(PATH, map_location=self.device)
         # Use weights_only=True for best practice when loading weights
-        model.load_state_dict(ckpt["model_state"])
+        self.model.load_state_dict(ckpt["model_state"])
         # Set the model to evaluation mode
-        model.eval()
+        self.model.eval()
 
         
         self.get_logger().info("Lane inference node has started!")
@@ -49,28 +51,9 @@ class LaneInferenceNode(Node):
     def inference_callback(self, msg):
         # 1. Convert ROS Image to OpenCV BGR
         frame = self.bridge.imgmsg_to_cv2(msg, "bgr8")
-        h, w = frame.shape[:2]
-
-        # 2. Preprocess exactly like DrivingDataset._preprocess
-        #    - crop lower 60%
-        top = int(h * 0.40)
-        cropped = frame[top:, :]
-
-        #    - resize to (out_w, out_h)
-        resized = cv2.resize(
-            cropped,
-            (self.out_w, self.out_h),
-            interpolation=cv2.INTER_AREA
-        )
-
-        #    - BGR -> RGB, normalize to [0,1]
-        rgb = cv2.cvtColor(resized, cv2.COLOR_BGR2RGB).astype(np.float32) / 255.0
-
-        #    - HWC -> CHW
-        chw = np.transpose(rgb, (2, 0, 1))  # (3, 66, 200)
-
-        #    - numpy -> torch tensor, add batch dim
-        x = torch.from_numpy(chw).unsqueeze(0).to(self.device)  # (1, 3, 66, 200)
+        
+        # 2. Preprocess using the same preprocessor as used in the training
+        x = self.preprocessor.preprocess(frame)
 
         # 3. Run model
         with torch.no_grad():
