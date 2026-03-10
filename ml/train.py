@@ -3,11 +3,9 @@ import cv2
 import math
 import pandas as pd
 import numpy as np
-from dataclasses import dataclass
 from preprocessor import PreProcessor 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 from torch.utils.data import Dataset, DataLoader
 from config import Config
 from pipilotnet import PiPilotNet
@@ -73,6 +71,8 @@ class DrivingDataset(Dataset):
         if self.augment:
             rgb, steering = self._augment(rgb, steering)
 
+
+        # DO WE NEED TO DO THIS TOO?
         # HWC -> CHW
         # reorders the axes of the image array 
         # makes it into channel, heigh, width shape
