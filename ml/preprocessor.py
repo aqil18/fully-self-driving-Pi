@@ -17,6 +17,8 @@ def preprocess(self, bgr: np.ndarray) -> np.ndarray:
     
         # Resized
         resized = cv2.resize(cropped, (self.out_w, self.out_h), interpolation=cv2.INTER_AREA)
-        # RGB
-        rgb = cv2.cvtColor(resized, cv2.COLOR_BGR2RGB).astype(np.float32) / 255.0
+
+        # RGB AND normalizes by dividing by 255
+        rgb = cv2.cvtColor(resized, cv2.COLOR_BGR2RGB) / 255.0
+        
         return rgb

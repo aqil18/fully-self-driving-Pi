@@ -4,7 +4,7 @@ import math
 import pandas as pd
 import numpy as np
 from dataclasses import dataclass
-from .preprocessor import preprocess 
+from preprocessor import preprocess 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -58,21 +58,24 @@ def set_seed(seed: int):
 
 
 # -----------------------------
-# Model (small PilotNet-style)
+# CNN Model
 # -----------------------------
 class PiPilotNet(nn.Module):
     def __init__(self):
         super().__init__()
+        ### Convolutional layers
         # input: (B, 3, 66, 200)
-        self.conv1 = nn.Conv2d(3, 24, kernel_size=5, stride=2)
-        self.conv2 = nn.Conv2d(24, 36, kernel_size=5, stride=2)
-        self.conv3 = nn.Conv2d(36, 48, kernel_size=5, stride=2)
-        self.conv4 = nn.Conv2d(48, 64, kernel_size=3, stride=1)
-        self.conv5 = nn.Conv2d(64, 64, kernel_size=3, stride=1)
+        # Input channels is 3 - because we have R G B
+        self.conv1 = nn.Conv2d(in_channels=3, out_channels=24, kernel_size=5, stride=2)
+        self.conv2 = nn.Conv2d(in_channels=24, out_channels=36, kernel_size=5, stride=2)
+        self.conv3 = nn.Conv2d(in_channels=36, out_channels=48, kernel_size=5, stride=2)
+        self.conv4 = nn.Conv2d(in_channels=48, out_channels=64, kernel_size=3, stride=1)
+        self.conv5 = nn.Conv2d(in_channels=64, out_channels=64, kernel_size=3, stride=1)
 
         # We'll infer flatten dim on first forward if needed
         self._flatten_dim = None
 
+        ### Fully connected layers
         self.fc1 = nn.Linear(1, 100)  # placeholder; we replace after infer
         self.fc2 = nn.Linear(100, 50)
         self.fc3 = nn.Linear(50, 10)
@@ -82,8 +85,11 @@ class PiPilotNet(nn.Module):
         if self._flatten_dim is None:
             self._flatten_dim = x.shape[1]
             self.fc1 = nn.Linear(self._flatten_dim, 100).to(x.device)
+    
 
+    ### forward defines which layesrs are data passes through and in what order
     def forward(self, x):
+        ### Relu is the activation function used
         x = F.relu(self.conv1(x))
         x = F.relu(self.conv2(x))
         x = F.relu(self.conv3(x))
@@ -148,8 +154,12 @@ class DrivingDataset(Dataset):
             rgb, steering = self._augment(rgb, steering)
 
         # HWC -> CHW
+        # reorders the axes of the image array 
+        # makes it into channel, heigh, width shape
         chw = np.transpose(rgb, (2, 0, 1))
+        # 3D tensor for image [channel][vert pixel][horiz pixel]
         x = torch.from_numpy(chw).float()
+        # 1D tensor for the steering and throttle
         y = torch.tensor([steering], dtype=torch.float32)
         z = torch.tensor([throttle], dtype=torch.float32)
         return x, y, z
@@ -210,13 +220,15 @@ def main():
     val_df = df.iloc[n - n_val :].copy()
 
     ### Create a torch legal dataset object
+    # NOTE: Torch requires object to have getitem and len methods
     train_ds = DrivingDataset(train_df, cfg.images_dir, cfg.out_h, cfg.out_w, augment=True)
     val_ds = DrivingDataset(val_df, cfg.images_dir, cfg.out_h, cfg.out_w, augment=False)
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     print(f"Using device: {device}")
     print(f"Train samples: {len(train_ds)} | Val samples: {len(val_ds)}")
-
+    
+    # Data loaders allow us to iterate through the dataset by batch size
     train_loader = DataLoader(train_ds, batch_size=cfg.batch_size, shuffle=True,
                               num_workers=cfg.num_workers, pin_memory=(device == "cuda"))
     val_loader = DataLoader(val_ds, batch_size=cfg.batch_size, shuffle=False,
