@@ -9,34 +9,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.data import Dataset, DataLoader
-
-
-# -----------------------------
-# Config
-# -----------------------------
-@dataclass
-class Config:
-    ### Paths
-    # Adjust the dateset to be used here
-    path: str = "datasets/2026-01-27_08-20-41"
-    csv_path: str = path + "/labels/labels.csv"
-    images_dir: str = path + "/images"
-
-    ### Training hyperparameters
-    # Allows for reproducible random nubmers
-    seed: int = 42
-    # Number of examples before updating model weights
-    batch_size: int = 64 
-    # Controls how big the weight updates are
-    learning_rate: float = 1e-3 
-    # Number of times the model has seen the dataset
-    epochs: int = 1
-    val_frac: float = 0.15  # last 15% used as val
-    # Number of CPU proccesses preparing the data 
-    num_workers: int = 2
-
-    # saving
-    save_path: str = "models/model.pt"
+from config import Config
+from pipilotnet import PiPilotNet
 
 
 cfg = Config()
@@ -51,55 +25,6 @@ def set_seed(seed: int):
     np.random.seed(seed)
     torch.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
-
-
-# -----------------------------
-# CNN Model
-# -----------------------------
-class PiPilotNet(nn.Module):
-    def __init__(self):
-        super().__init__()
-        ### Convolutional layers
-        # input: (B, 3, 66, 200)
-        # Input channels is 3 - because we have R G B
-        self.conv1 = nn.Conv2d(in_channels=3, out_channels=24, kernel_size=5, stride=2)
-        self.conv2 = nn.Conv2d(in_channels=24, out_channels=36, kernel_size=5, stride=2)
-        self.conv3 = nn.Conv2d(in_channels=36, out_channels=48, kernel_size=5, stride=2)
-        self.conv4 = nn.Conv2d(in_channels=48, out_channels=64, kernel_size=3, stride=1)
-        self.conv5 = nn.Conv2d(in_channels=64, out_channels=64, kernel_size=3, stride=1)
-
-        # We'll infer flatten dim on first forward if needed
-        self._flatten_dim = None
-
-        ### Fully connected layers
-        self.fc1 = nn.Linear(1, 100)  # placeholder; we replace after infer
-        self.fc2 = nn.Linear(100, 50)
-        self.fc3 = nn.Linear(50, 10)
-        self.fc4 = nn.Linear(10, 1)
-
-    def _ensure_fc1(self, x):
-        if self._flatten_dim is None:
-            self._flatten_dim = x.shape[1]
-            self.fc1 = nn.Linear(self._flatten_dim, 100).to(x.device)
-    
-
-    ### forward defines which layesrs are data passes through and in what order
-    def forward(self, x):
-        ### Relu is the activation function used
-        x = F.relu(self.conv1(x))
-        x = F.relu(self.conv2(x))
-        x = F.relu(self.conv3(x))
-        x = F.relu(self.conv4(x))
-        x = F.relu(self.conv5(x))
-
-        x = torch.flatten(x, 1)
-        self._ensure_fc1(x)
-
-        x = F.relu(self.fc1(x))
-        x = F.relu(self.fc2(x))
-        x = F.relu(self.fc3(x))
-        steering = torch.tanh(self.fc4(x))  # [-1, 1]
-        return steering
 
 
 # -----------------------------
@@ -165,7 +90,7 @@ class DrivingDataset(Dataset):
 # -----------------------------
 def run_epoch(model, loader, optimizer, device, train: bool):
     if train:
-        # where does this go
+        # .train is a Pytorch method 
         model.train()
     else:
         model.eval()

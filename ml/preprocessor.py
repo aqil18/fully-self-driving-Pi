@@ -1,13 +1,11 @@
 import cv2
 import np    
+from config import Config
 
 class PreProcessor():
         def __init__(self):
-                ### Image preprocessing
-                self.out_h: int = 66
-                self.out_w: int = 200
+                self.config = Config()
 
-                
         def preprocess(self, bgr: np.ndarray) -> np.ndarray:
                 """
                 Simple & safe preprocess:
@@ -23,7 +21,7 @@ class PreProcessor():
                 cropped = bgr[top:, :]
         
                 # Resized
-                resized = cv2.resize(cropped, (self.out_w, self.out_h), interpolation=cv2.INTER_AREA)
+                resized = cv2.resize(cropped, (self.config.out_w, self.config.out_h), interpolation=cv2.INTER_AREA)
 
                 # RGB AND normalizes by dividing by 255
                 rgb = cv2.cvtColor(resized, cv2.COLOR_BGR2RGB).astype(np.float64) / 255.0

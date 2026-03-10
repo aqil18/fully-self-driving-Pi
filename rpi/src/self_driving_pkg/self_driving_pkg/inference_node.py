@@ -10,8 +10,8 @@ import numpy as np
 import math
 from collections import deque
 import torch
-from .models import PiPilotNet
-
+from .models.train import PiPilotNet
+## import preprocessor
 
 PATH = '/models/model.pt' # The path where your model weights are saved
 
