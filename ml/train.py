@@ -100,18 +100,17 @@ def run_epoch(model, loader, optimizer, device, train: bool):
     mse = nn.MSELoss()
 
     for x, y, z in loader:
+
         x = x.to(device)
         y = y.to(device)
         z = z.to(device)
+        
 
         if train:
             optimizer.zero_grad()
 
-        pred = model(x)   # shape: (B, 2)
+        pred_steering, pred_throttle = model(x)   # Returns 2 tensors
         
-        print(pred)
-
-        pred_steering, pred_throttle = pred[0] 
 
         loss_steering = mse(pred_steering, y)
         loss_throttle = mse(pred_throttle, z)
@@ -190,13 +189,14 @@ def main():
 
     model.eval()
     with torch.no_grad():
-        pred = model(x).item()
+        pred_steering, pred_throttle = model(x)
 
     print("\nQuick test:")
     print(f"Image: {test_row['filename']}")
-    print(f"GT steering:  {float(test_row['steering']): .3f}")
-    print(f"GT throttle:  {float(test_row['throttle']): .3f}")
-    print(f"Pred steering:{pred: .3f}")
+    print(f"Actual steering:  {float(test_row['steering']): .3f}")
+    print(f"Actual throttle:  {float(test_row['throttle']): .3f}")
+    print(f"Pred steering:{pred_steering: .3f}")
+    print(f"Pred steering:{pred_throttle: .3f}")
 
 
 if __name__ == "__main__":

@@ -25,7 +25,7 @@ class Config:
     num_workers: int = 2
 
     # saving
-    save_path: str = "./rpi/src/self_driving_pkg/models/model.pt"
+    save_path: str = "../rpi/src/self_driving_pkg/self_driving_pkg/models/model.pt"
     
     ### Image preprocessing
     out_h: int = 66

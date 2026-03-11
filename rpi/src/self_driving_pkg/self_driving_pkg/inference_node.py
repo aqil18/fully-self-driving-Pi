@@ -60,9 +60,7 @@ class LaneInferenceNode(Node):
         # 3. Run model
         with torch.no_grad():
             # Giving the model my input and getting an output tensor
-            pred_steering, pred_throttle = self.model(x)[0] 
-            pred_steering = pred_steering.item()
-            pred_throttle = pred_throttle.item()
+            pred_steering, pred_throttle = self.model(x)
 
         # 4. Map normalized output to degrees (or whatever your servo expects)
         #    If your labels in CSV were already in [-1,1], this maps to ±max_steer_deg.
