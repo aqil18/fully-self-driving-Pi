@@ -195,8 +195,8 @@ def main():
     print(f"Image: {test_row['filename']}")
     print(f"Actual steering:  {float(test_row['steering']): .3f}")
     print(f"Actual throttle:  {float(test_row['throttle']): .3f}")
-    print(f"Pred steering:{pred_steering: .3f}")
-    print(f"Pred steering:{pred_throttle: .3f}")
+    print(f"Pred steering:    {pred_steering.item() * 90}") 
+    print(f"Pred throttle:    {pred_throttle.item() * 40}")
 
 
 if __name__ == "__main__":
