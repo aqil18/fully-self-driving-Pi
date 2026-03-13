@@ -7,7 +7,7 @@ from dataclasses import dataclass
 class Config:
     ### Model path
     # Where your model weights are saved
-    model_path = '/models/model.pt' 
+    model_path = './models/model.pt' 
 
     ### Motor thresholds
     max_throttle = 40
