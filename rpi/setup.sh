@@ -1,4 +1,8 @@
 #!/bin/bash
+
+echo -e "\nPulling from repository"
+git pull
+
 echo -e "\nSetting up ROS2"
 source /opt/ros/kilted/setup.bash
 

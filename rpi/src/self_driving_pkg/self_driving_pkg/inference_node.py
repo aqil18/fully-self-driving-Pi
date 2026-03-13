@@ -11,8 +11,8 @@ import math
 from collections import deque
 import torch
 
-from ml.pipilotnet import PiPilotNet
-from ml.preprocessor import PreProcessor
+from .ml.pipilotnet import PiPilotNet
+from .ml.preprocessor import PreProcessor
 
 from config import Config
 
