@@ -42,6 +42,7 @@ class LaneInferenceNode(Node):
         # create an untrained model and then load the parameters onto it
         self.model = PiPilotNet()
         self.preprocessor = PreProcessor()
+        self.device = "cuda" if torch.cuda.is_available() else "cpu"
         # Parameters are stored in state_dict
         ckpt = torch.load(self.cfg.model_path, map_location=self.device)
         # Use weights_only=True for best practice when loading weights
