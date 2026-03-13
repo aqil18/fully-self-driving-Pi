@@ -14,7 +14,7 @@ import torch
 from .ml.pipilotnet import PiPilotNet
 from .ml.preprocessor import PreProcessor
 
-from config import Config
+from .config import Config
 
 
 
