@@ -1,6 +1,6 @@
 import cv2
 import np    
-from config import Config
+from .config import Config
 
 class PreProcessor():
         def __init__(self):
