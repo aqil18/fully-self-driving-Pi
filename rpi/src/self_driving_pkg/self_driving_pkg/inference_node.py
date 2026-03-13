@@ -34,6 +34,10 @@ class LaneInferenceNode(Node):
         self.steering_buffer = deque(maxlen=self.publish_every_n_frames)
         self.smoothed_angle = 0.0
 
+
+        # RPI settings
+        self.cfg = Config()
+        
         # Convolutional Neural Network - 
         # create an untrained model and then load the parameters onto it
         self.model = PiPilotNet()
@@ -45,9 +49,6 @@ class LaneInferenceNode(Node):
         # Set the model to evaluation mode
         self.model.eval()
 
-        # RPI settings
-        self.cfg = Config()
-        
         self.get_logger().info("Lane inference node has started!")
 
     def inference_callback(self, msg):
