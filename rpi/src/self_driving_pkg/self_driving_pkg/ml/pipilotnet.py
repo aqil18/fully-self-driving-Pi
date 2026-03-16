@@ -21,7 +21,7 @@ class PiPilotNet(nn.Module):
         self._flatten_dim = None
 
         ### Fully connected layers
-        self.fc1 = nn.Linear(1, 100)  # placeholder; we replace after infer
+        self.fc1 = nn.Linear(1152, 100)  # placeholder; we replace after infer
         self.fc2 = nn.Linear(100, 50)
         self.fc3 = nn.Linear(50, 10)
         self.fc4 = nn.Linear(10, 2) # 2 Outputs - steering and throttle
