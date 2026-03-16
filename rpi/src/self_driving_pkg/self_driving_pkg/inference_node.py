@@ -48,6 +48,7 @@ class LaneInferenceNode(Node):
         # Use weights_only=True for best practice when loading weights
         self.model.load_state_dict(ckpt["model_state"])
         # Set the model to evaluation mode
+        self.model.to(self.device)
         self.model.eval()
 
         self.get_logger().info("Lane inference node has started!")
@@ -60,6 +61,7 @@ class LaneInferenceNode(Node):
         x = self.preprocessor.preprocess(frame)
 
         # 3. Run model
+        x = torch.from_numpy(x).permute(2, 0, 1).unsqueeze(0).float().to(self.device)
         with torch.no_grad():
             # Giving the model my input and getting an output tensor
             pred_steering, pred_throttle = self.model(x)
