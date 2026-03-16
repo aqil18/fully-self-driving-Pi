@@ -75,9 +75,6 @@ class LaneInferenceNode(Node):
         self.steering_buffer.append(steering_angle)
         self.frame_count += 1
 
-        # Log raw prediction
-        self.get_logger().info(f"Raw model steering (deg): {steering_angle:.2f}")
-
         # 6. Publish smoothed steering angle every N frames
         if self.frame_count % self.publish_every_n_frames == 0:
             self.smoothed_angle = float(np.mean(self.steering_buffer))
@@ -92,8 +89,7 @@ class LaneInferenceNode(Node):
             self.motor_pub.publish(motor_msg)
 
             self.get_logger().info(
-                f"Publishing smoothed steering angle: {self.smoothed_angle:.2f} deg "
-                f"(command: {command_angle:.2f})"
+                f"steering={int(command_angle)}  throttle={int(throttle)}"
             )
 
         # 7. Draw text on the original frame
