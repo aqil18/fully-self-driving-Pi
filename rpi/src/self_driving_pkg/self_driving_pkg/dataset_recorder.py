@@ -2,6 +2,7 @@ import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Image
 from interfaces.msg import Motor as MotorMsg
+from std_msgs.msg import Empty
 from cv_bridge import CvBridge
 import cv2
 import csv
@@ -22,11 +23,18 @@ class DatasetRecorder(Node):
         self.cmd_sub = self.create_subscription(
             MotorMsg, '/motor/cmd', self.cmd_callback, 10)
 
+        self.shutdown_sub = self.create_subscription(
+            Empty, '/teleop/shutdown', self.shutdown_callback, 10)
+
         os.makedirs(self.file_name + '/images', exist_ok=True)
         os.makedirs(self.file_name + '/labels', exist_ok=True)
         self.csv_file = open(self.file_name + '/labels/labels.csv', 'w', newline='')
         self.writer = csv.writer(self.csv_file)
         self.writer.writerow(['filename', 'steering', 'throttle'])
+
+    def shutdown_callback(self, msg):
+        self.get_logger().info("Teleop shutdown received, stopping dataset recorder.")
+        rclpy.shutdown()
 
     def cmd_callback(self, msg):
         self.latest_cmd = msg

@@ -3,6 +3,7 @@
 import rclpy
 from rclpy.node import Node
 from interfaces.msg import Motor
+from std_msgs.msg import Empty
 import sys
 import termios
 import tty
@@ -13,6 +14,7 @@ class TeleopNode(Node):
         super().__init__('teleop_node')
 
         self.steer_pub = self.create_publisher(Motor, '/motor/cmd', 10)
+        self.shutdown_pub = self.create_publisher(Empty, '/teleop/shutdown', 10)
 
 
         self.speed = 0
@@ -64,6 +66,7 @@ class TeleopNode(Node):
                 self.angle = 0
                 continue
             elif key == '\x03':  # Ctrl+C
+                self.shutdown_pub.publish(Empty())
                 break
 
 
