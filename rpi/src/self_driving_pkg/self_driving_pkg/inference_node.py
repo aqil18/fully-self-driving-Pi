@@ -84,7 +84,7 @@ class LaneInferenceNode(Node):
             # command_angle = Kp * self.smoothed_angle
 
             motor_msg = Motor()
-            motor_msg.angle = int(command_angle)
+            motor_msg.angle = int(self.smoothed_angle)
             motor_msg.speed = int(throttle)
             self.motor_pub.publish(motor_msg)
 
