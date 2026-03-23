@@ -79,9 +79,9 @@ class LaneInferenceNode(Node):
         if self.frame_count % self.publish_every_n_frames == 0:
             self.smoothed_angle = float(np.mean(self.steering_buffer))
 
-            # Simple proportional control (tune Kp!)
-            Kp = 1.8
-            command_angle = Kp * self.smoothed_angle
+            # # Simple proportional control (tune Kp!)
+            # Kp = 1.8
+            # command_angle = Kp * self.smoothed_angle
 
             motor_msg = Motor()
             motor_msg.angle = int(command_angle)
