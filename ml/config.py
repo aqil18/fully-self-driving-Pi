@@ -19,7 +19,7 @@ class Config:
     # Controls how big the weight updates are
     learning_rate: float = 1e-3 
     # Number of times the model has seen the dataset
-    epochs: int = 1
+    epochs: int = 10
     val_frac: float = 0.15  # last 15% used as val
     # Number of CPU proccesses preparing the data 
     num_workers: int = 2
