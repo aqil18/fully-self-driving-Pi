@@ -30,3 +30,7 @@ class Config:
     ### Image preprocessing
     out_h: int = 66
     out_w: int = 200
+
+    ### Motor thresholds
+    max_throttle = 40
+    max_angle = 90 

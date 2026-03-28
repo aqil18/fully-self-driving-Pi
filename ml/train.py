@@ -80,8 +80,8 @@ class DrivingDataset(Dataset):
         # 3D tensor for image [channel][vert pixel][horiz pixel]
         x = torch.from_numpy(chw).float()
         # 1D tensor for the steering and throttle
-        y = torch.tensor([steering], dtype=torch.float32)
-        z = torch.tensor([throttle], dtype=torch.float32)
+        y = torch.tensor([steering/cfg.max_angle], dtype=torch.float32)
+        z = torch.tensor([throttle/cfg.max_throttle], dtype=torch.float32)
         return x, y, z
 
 
