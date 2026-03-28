@@ -89,7 +89,7 @@ class LaneInferenceNode(Node):
             self.motor_pub.publish(motor_msg)
 
             self.get_logger().info(
-                f"steering={int(command_angle)}  throttle={int(throttle)}"
+                f"steering={int(self.smoothed_angle)}  throttle={int(throttle)}"
             )
 
         # 7. Draw text on the original frame
