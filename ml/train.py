@@ -134,9 +134,12 @@ def main():
     ### Read in csv of image, steering angle, throttle
     # Copies csv into panda data frame
     df = pd.read_csv(cfg.csv_path)
+
     required_cols = {"filename", "steering", "throttle"}
     if not required_cols.issubset(df.columns):
         raise ValueError(f"CSV must contain columns: {required_cols}. Found: {list(df.columns)}")
+
+    df = df[df["throttle"] > 0].reset_index(drop=True)   # drop stopped frames
 
     ### Copies and splits into training and validation data frame
     # Chronological split: first part train, last part val
