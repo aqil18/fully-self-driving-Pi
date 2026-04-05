@@ -7,7 +7,7 @@ from dataclasses import dataclass
 class Config:
     ### Paths
     # Adjust the dateset to be used here
-    path: str = "datasets/2026-03-19_21-10-56"
+    path: str = "datasets/merged"
     csv_path: str = path + "/labels/labels.csv"
 
     ### Training hyperparameters
