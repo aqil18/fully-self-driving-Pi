@@ -29,11 +29,10 @@ def set_seed(seed: int):
 # Dataset
 # -----------------------------
 class DrivingDataset(Dataset):
-    def __init__(self, df: pd.DataFrame, images_dir: str, preprossor: PreProcessor, augment: bool):
+    def __init__(self, df: pd.DataFrame, preprocessor: PreProcessor, augment: bool):
         self.df = df.reset_index(drop=True)
-        self.images_dir = images_dir
         self.augment = augment
-        self.preprocessor = preprossor
+        self.preprocessor = preprocessor
 
     def __len__(self):
         return len(self.df)
@@ -61,7 +60,7 @@ class DrivingDataset(Dataset):
         throttle = float(row["throttle"])
 
         # Reads in image
-        path = os.path.join(self.images_dir, fname)
+        path = fname
         bgr = cv2.imread(path, cv2.IMREAD_COLOR)
         if bgr is None:
             raise FileNotFoundError(f"Could not read image: {path}")
@@ -151,8 +150,8 @@ def main():
 
     ### Create a torch legal dataset object
     # NOTE: Torch requires object to have getitem and len methods
-    train_ds = DrivingDataset(train_df, cfg.images_dir, preprocessor, augment=True)
-    val_ds = DrivingDataset(val_df, cfg.images_dir, preprocessor, augment=False)
+    train_ds = DrivingDataset(train_df, preprocessor, augment=True)
+    val_ds = DrivingDataset(val_df, preprocessor, augment=False)
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     print(f"Using device: {device}")
@@ -185,9 +184,7 @@ def main():
 
     # quick test inference on the last val image
     test_row = val_df.iloc[-1]
-    test_path = os.path.join(cfg.images_dir, test_row["filename"])
-    bgr = cv2.imread(test_path, cv2.IMREAD_COLOR)
-    ds_tmp = DrivingDataset(val_df.iloc[-1:].copy(), cfg.images_dir, preprocessor, augment=False)
+    ds_tmp = DrivingDataset(val_df.iloc[-1:].copy(), preprocessor, augment=False)
     x, y, z = ds_tmp[0]
     x = x.unsqueeze(0).to(device)
 
