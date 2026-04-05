@@ -140,9 +140,10 @@ def main():
         raise ValueError(f"CSV must contain columns: {required_cols}. Found: {list(df.columns)}")
 
     df = df[df["throttle"] > 0].reset_index(drop=True)   # drop stopped frames
-
+    df = df.sample(frac=1, random_state=cfg.seed).reset_index(drop=True)  # shuffle before split
+    
+    
     ### Copies and splits into training and validation data frame
-    # Chronological split: first part train, last part val
     n = len(df)
     n_val = max(1, int(math.floor(n * cfg.val_frac)))
     train_df = df.iloc[: n - n_val].copy()
