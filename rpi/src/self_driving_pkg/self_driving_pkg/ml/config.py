@@ -7,9 +7,8 @@ from dataclasses import dataclass
 class Config:
     ### Paths
     # Adjust the dateset to be used here
-    path: str = "datasets/2026-03-19_21-10-56"
+    path: str = "datasets/merged"
     csv_path: str = path + "/labels/labels.csv"
-    images_dir: str = path + "/images"
 
     ### Training hyperparameters
     # Allows for reproducible random nubmers
@@ -19,7 +18,7 @@ class Config:
     # Controls how big the weight updates are
     learning_rate: float = 1e-3 
     # Number of times the model has seen the dataset
-    epochs: int = 1
+    epochs: int = 50
     val_frac: float = 0.15  # last 15% used as val
     # Number of CPU proccesses preparing the data 
     num_workers: int = 2
@@ -30,3 +29,7 @@ class Config:
     ### Image preprocessing
     out_h: int = 66
     out_w: int = 200
+
+    ### Motor thresholds
+    max_throttle = 40
+    max_angle = 90 
