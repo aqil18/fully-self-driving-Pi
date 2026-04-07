@@ -95,22 +95,13 @@ class LaneInferenceNode(Node):
         # 7. Draw text on the original frame
         combo = frame.copy()
         font = cv2.FONT_HERSHEY_SIMPLEX
-        position = (50, 100)
-        font_scale = 1.5
         color = (0, 0, 255)
-        thickness = 2
         line_type = cv2.LINE_AA
 
-        cv2.putText(
-            combo,
-            f"Steer: {self.smoothed_angle:.2f} deg\n Throttle: {throttle:.2f}",
-            position,
-            font,
-            font_scale,
-            color,
-            thickness,
-            line_type,
-        )
+        cv2.putText(combo, f"Steer: {self.smoothed_angle:.2f} deg",
+                    (10, 20), font, 0.5, color, 1, line_type)
+        cv2.putText(combo, f"Throttle: {throttle:.2f}",
+                    (10, 40), font, 0.5, color, 1, line_type)
 
         # 8. Publish annotated image
         annotated_msg = self.bridge.cv2_to_imgmsg(combo, "bgr8")
