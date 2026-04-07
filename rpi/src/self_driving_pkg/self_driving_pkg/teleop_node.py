@@ -20,6 +20,7 @@ class TeleopNode(Node):
         self.speed = 0
         self.step_speed = 10     # base speed %
         self.max_speed = 40
+        self.min_speed = 0
         self.angle = 0
         self.angle_step = 15
         self.max_angle = 90      # degrees
@@ -45,7 +46,7 @@ class TeleopNode(Node):
     def loop(self):
         print("\nWASD Motor Teleop")
         print("----------------")
-        print("W/S : forward / backward")
+        print("W/S : speed up / slow down")
         print("A/D : steer left / right")
         print("SPACE : stop")
         print("CTRL+C : quit\n")
@@ -56,7 +57,7 @@ class TeleopNode(Node):
             if key == 'w':
                 self.speed = min(self.speed + self.step_speed, self.max_speed)
             elif key == 's':
-                self.speed = max(self.speed - self.step_speed, -self.max_speed)
+                self.speed = max(self.speed - self.step_speed, self.min_speed)
             elif key == 'a':
                 self.angle = max(self.angle - self.angle_step, -self.max_angle)
             elif key == 'd':
@@ -71,9 +72,7 @@ class TeleopNode(Node):
 
 
             cmdAngle = self.angle
-            cmdSpeed = abs(self.speed)
-            if self.speed < 0:
-                cmdAngle = -cmdAngle + 180
+            cmdSpeed = self.speed
 
             self.get_logger().info(
                 f"Speed: {cmdSpeed}%, Angle: {cmdAngle}°"
