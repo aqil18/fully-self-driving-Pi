@@ -103,7 +103,7 @@ class LaneInferenceNode(Node):
 
         cv2.putText(
             combo,
-            f"Steer: {self.smoothed_angle:.2f} deg",
+            f"Steer: {self.smoothed_angle:.2f} deg\n Throttle: {throttle:.2f}",
             position,
             font,
             font_scale,
