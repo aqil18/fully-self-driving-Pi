@@ -99,9 +99,9 @@ class LaneInferenceNode(Node):
         line_type = cv2.LINE_AA
 
         cv2.putText(combo, f"Steer: {self.smoothed_angle:.2f} deg",
-                    (10, 20), font, 1, color, 1, line_type)
+                    (10, 30), font, 1, color, 1, line_type)
         cv2.putText(combo, f"Throttle: {throttle:.2f}",
-                    (10, 40), font, 1, color, 1, line_type)
+                    (10, 70), font, 1, color, 1, line_type)
 
         # 8. Publish annotated image
         annotated_msg = self.bridge.cv2_to_imgmsg(combo, "bgr8")
