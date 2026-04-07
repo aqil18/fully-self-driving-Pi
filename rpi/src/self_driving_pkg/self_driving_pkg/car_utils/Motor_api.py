@@ -1,5 +1,5 @@
-from .PCA9685 import PCA9685
-from .ADC import *
+from PCA9685 import PCA9685
+from ADC import *
 
 MAX_SPEED = 40   # matches teleop max_speed
 MAX_PWM   = 4095
