@@ -2,9 +2,10 @@ from PCA9685 import PCA9685
 from ADC import *
 
 MAX_SPEED  = 40    # matches teleop max_speed
-MIN_SPEED = -40
+MIN_SPEED  = -40
 MAX_PWM    = 4095
 STEER_GAIN = 2.5   # increase for sharper turns (1.0 = linear, 2.0 = very aggressive)
+DEADBAND   = 400   # minimum PWM to overcome motor stiction — tune up if rear motors still stall
 
 class Motor:
     def __init__(self):
@@ -16,11 +17,18 @@ class Motor:
         self.br_inverted = True
         self.bl_inverted = False
 
+    def _apply_deadband(self, v):
+        if v > 0:   return max(v, DEADBAND)
+        if v < 0:   return min(v, -DEADBAND)
+        return 0
+
     def _set_wheel_speeds(self, FL, BL, FR, BR):
         if self.fl_inverted: FL = -FL
         if self.fr_inverted: FR = -FR
         if self.bl_inverted: BL = -BL
         if self.br_inverted: BR = -BR
+
+        FL, BL, FR, BR = (self._apply_deadband(v) for v in (FL, BL, FR, BR))
 
         self.pwm.setMotorPwm(0, max(0, min(MAX_PWM,  FL)))
         self.pwm.setMotorPwm(1, max(0, min(MAX_PWM, -FL)))
