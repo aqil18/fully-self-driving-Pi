@@ -32,13 +32,18 @@ class Motor:
 
     def move(self, angle, speed):
         """
-        Move the robot forward with steering.
+        Move the robot.
 
         :param angle: Steering angle (-90 = full left, 0 = straight, 90 = full right)
-        :param speed: Forward speed (0-40)
+        :param speed: Speed (0-40 forward, negative = straight backward)
         """
-        pwm = int(speed * (MAX_PWM / MAX_SPEED))
-        turn = (angle / 90.0) * STEER_GAIN  # Normalise to [-1, 1] then amplify
+        pwm = int(abs(speed) * (MAX_PWM / MAX_SPEED))
+
+        if speed < 0:
+            self._set_wheel_speeds(-pwm, -pwm, -pwm, -pwm)
+            return
+
+        turn = (angle / 90.0) * STEER_GAIN
 
         left  = int(pwm * (1 + turn))
         right = int(pwm * (1 - turn))
