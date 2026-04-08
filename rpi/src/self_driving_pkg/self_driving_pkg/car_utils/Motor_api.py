@@ -4,7 +4,7 @@ from ADC import *
 MAX_SPEED  = 40    # matches teleop max_speed
 MIN_SPEED = -40
 MAX_PWM    = 4095
-STEER_GAIN = 3   # increase for sharper turns (1.0 = linear, 2.0 = very aggressive)
+STEER_GAIN = 2.5   # increase for sharper turns (1.0 = linear, 2.0 = very aggressive)
 
 class Motor:
     def __init__(self):
@@ -65,7 +65,7 @@ if __name__ == "__main__":
     step_speed = 2
     max_speed  = MAX_SPEED
     min_speed = MIN_SPEED
-    step_angle = 10
+    step_angle = 20
     max_angle  = 180
 
     def getch():
