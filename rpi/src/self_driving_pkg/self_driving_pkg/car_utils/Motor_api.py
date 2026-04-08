@@ -65,8 +65,8 @@ if __name__ == "__main__":
     step_speed = 5
     max_speed  = MAX_SPEED
     min_speed = MIN_SPEED
-    step_angle = 20
-    max_angle  = 90
+    step_angle = 10
+    max_angle  = 180
 
     def getch():
         fd = sys.stdin.fileno()
