@@ -2,6 +2,7 @@ from PCA9685 import PCA9685
 from ADC import *
 
 MAX_SPEED  = 40    # matches teleop max_speed
+MIN_SPEED = -40
 MAX_PWM    = 4095
 STEER_GAIN = 1.5   # increase for sharper turns (1.0 = linear, 2.0 = very aggressive)
 
@@ -63,6 +64,7 @@ if __name__ == "__main__":
     angle = 0
     step_speed = 5
     max_speed  = MAX_SPEED
+    min_speed = MIN_SPEED
     step_angle = 20
     max_angle  = 90
 
@@ -86,7 +88,7 @@ if __name__ == "__main__":
             if key == 'w':
                 speed = min(speed + step_speed, max_speed)
             elif key == 's':
-                speed = max(speed - step_speed, 0)
+                speed = max(speed - step_speed, )
             elif key == 'a':
                 angle = max(angle - step_angle, -max_angle)
             elif key == 'd':
