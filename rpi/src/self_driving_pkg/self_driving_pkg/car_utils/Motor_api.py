@@ -62,7 +62,7 @@ if __name__ == "__main__":
 
     speed = 0
     angle = 0
-    step_speed = 5
+    step_speed = 2
     max_speed  = MAX_SPEED
     min_speed = MIN_SPEED
     step_angle = 10
