@@ -1,8 +1,9 @@
 from PCA9685 import PCA9685
 from ADC import *
 
-MAX_SPEED = 40   # matches teleop max_speed
-MAX_PWM   = 4095
+MAX_SPEED  = 40    # matches teleop max_speed
+MAX_PWM    = 4095
+STEER_GAIN = 1.5   # increase for sharper turns (1.0 = linear, 2.0 = very aggressive)
 
 class Motor:
     def __init__(self):
@@ -37,10 +38,10 @@ class Motor:
         :param speed: Forward speed (0-40)
         """
         pwm = int(speed * (MAX_PWM / MAX_SPEED))
-        turn = angle / 90.0  # Normalise to [-1, 1]
+        turn = (angle / 90.0) * STEER_GAIN  # Normalise to [-1, 1] then amplify
 
-        left  = int(pwm * (1 - turn))
-        right = int(pwm * (1 + turn))
+        left  = int(pwm * (1 + turn))
+        right = int(pwm * (1 - turn))
 
         self._set_wheel_speeds(left, left, right, right)
 
