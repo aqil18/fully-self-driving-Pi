@@ -88,7 +88,7 @@ if __name__ == "__main__":
             if key == 'w':
                 speed = min(speed + step_speed, max_speed)
             elif key == 's':
-                speed = max(speed - step_speed, )
+                speed = max(speed - step_speed, min_speed )
             elif key == 'a':
                 angle = max(angle - step_angle, -max_angle)
             elif key == 'd':
