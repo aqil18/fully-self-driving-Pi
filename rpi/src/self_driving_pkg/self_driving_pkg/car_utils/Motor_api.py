@@ -8,7 +8,7 @@ STEER_GAIN       = 2.5  # increase for sharper turns (1.0 = linear, 2.0 = very a
 DEADBAND_FRONT   = 0    # front motors start without a boost
 DEADBAND_REAR    = 700  # tune between 600-800 until rear motors reliably start
 SMOOTH           = 0.1  # 0.0 = no smoothing (instant), 1.0 = never moves — tune between 0.3-0.7
-STEP_ANGLE = 10
+STEP_ANGLE = 30
 
 class Motor:
     def __init__(self):
