@@ -7,6 +7,7 @@ MAX_PWM    = 4095
 STEER_GAIN       = 2.5  # increase for sharper turns (1.0 = linear, 2.0 = very aggressive)
 DEADBAND_FRONT   = 0    # front motors start without a boost
 DEADBAND_REAR    = 700  # tune between 600-800 until rear motors reliably start
+SMOOTH           = 0.5  # 0.0 = no smoothing (instant), 1.0 = never moves — tune between 0.3-0.7
 STEP_ANGLE = 20
 
 class Motor:
@@ -18,6 +19,8 @@ class Motor:
         self.fl_inverted = False
         self.br_inverted = True
         self.bl_inverted = False
+        self._left_pwm  = 0.0
+        self._right_pwm = 0.0
 
     def _apply_deadband(self, v, deadband):
         if v > 0: return max(v, deadband)
@@ -59,12 +62,18 @@ class Motor:
 
         turn = (angle / 90.0) * STEER_GAIN
 
-        left  = int(pwm * (1 + turn))
-        right = int(pwm * (1 - turn))
+        target_left  = pwm * (1 + turn)
+        target_right = pwm * (1 - turn)
 
-        self._set_wheel_speeds(left, left, right, right)
+        self._left_pwm  = self._left_pwm  * SMOOTH + target_left  * (1 - SMOOTH)
+        self._right_pwm = self._right_pwm * SMOOTH + target_right * (1 - SMOOTH)
+
+        self._set_wheel_speeds(int(self._left_pwm), int(self._left_pwm),
+                               int(self._right_pwm), int(self._right_pwm))
 
     def stop(self):
+        self._left_pwm  = 0.0
+        self._right_pwm = 0.0
         self._set_wheel_speeds(0, 0, 0, 0)
 
 
