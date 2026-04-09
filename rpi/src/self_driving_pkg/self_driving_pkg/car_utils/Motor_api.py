@@ -4,8 +4,9 @@ from ADC import *
 MAX_SPEED  = 40    # matches teleop max_speed
 MIN_SPEED  = -40
 MAX_PWM    = 4095
-STEER_GAIN = 2.5  # increase for sharper turns (1.0 = linear, 2.0 = very aggressive)
-DEADBAND   = 800   # minimum PWM to overcome motor stiction — tune up if rear motors still stall
+STEER_GAIN       = 2.5  # increase for sharper turns (1.0 = linear, 2.0 = very aggressive)
+DEADBAND_FRONT   = 0    # front motors start without a boost
+DEADBAND_REAR    = 700  # tune between 600-800 until rear motors reliably start
 STEP_ANGLE = 20
 
 class Motor:
@@ -18,9 +19,9 @@ class Motor:
         self.br_inverted = True
         self.bl_inverted = False
 
-    def _apply_deadband(self, v):
-        if v > 0:   return max(v, DEADBAND)
-        if v < 0:   return min(v, -DEADBAND)
+    def _apply_deadband(self, v, deadband):
+        if v > 0: return max(v, deadband)
+        if v < 0: return min(v, -deadband)
         return 0
 
     def _set_wheel_speeds(self, FL, BL, FR, BR):
@@ -29,7 +30,10 @@ class Motor:
         if self.bl_inverted: BL = -BL
         if self.br_inverted: BR = -BR
 
-        FL, BL, FR, BR = (self._apply_deadband(v) for v in (FL, BL, FR, BR))
+        FL = self._apply_deadband(FL, DEADBAND_FRONT)
+        FR = self._apply_deadband(FR, DEADBAND_FRONT)
+        BL = self._apply_deadband(BL, DEADBAND_REAR)
+        BR = self._apply_deadband(BR, DEADBAND_REAR)
 
         self.pwm.setMotorPwm(0, max(0, min(MAX_PWM,  FL)))
         self.pwm.setMotorPwm(1, max(0, min(MAX_PWM, -FL)))
