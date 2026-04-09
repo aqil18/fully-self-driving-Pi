@@ -4,7 +4,7 @@ from ADC import *
 MAX_SPEED  = 40    # matches teleop max_speed
 MIN_SPEED  = -40
 MAX_PWM    = 4095
-STEER_GAIN = 2.0  # increase for sharper turns (1.0 = linear, 2.0 = very aggressive)
+STEER_GAIN = 2.5  # increase for sharper turns (1.0 = linear, 2.0 = very aggressive)
 DEADBAND   = 300   # minimum PWM to overcome motor stiction — tune up if rear motors still stall
 STEP_ANGLE = 20
 
