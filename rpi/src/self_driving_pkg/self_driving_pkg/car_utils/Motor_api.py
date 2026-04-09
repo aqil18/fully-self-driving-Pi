@@ -1,6 +1,7 @@
-from PCA9685 import PCA9685
-from ADC import *
+from .PCA9685 import PCA9685
+from .ADC import *
 
+MAX_ANGLE = 180
 MAX_SPEED  = 40    # matches teleop max_speed
 MIN_SPEED  = -40
 MAX_PWM    = 4095
@@ -9,6 +10,7 @@ DEADBAND_FRONT   = 0    # front motors start without a boost
 DEADBAND_REAR    = 800  # tune between 600-800 until rear motors reliably start
 SMOOTH           = 0  # 0.0 = no smoothing (instant), 1.0 = never moves — tune between 0.3-0.7
 STEP_ANGLE = 30
+STEP_SPEED = 2
 
 class Motor:
     def __init__(self):
@@ -84,11 +86,11 @@ if __name__ == "__main__":
 
     speed = 0
     angle = 0
-    step_speed = 2
+    step_speed = STEP_SPEED
     max_speed  = MAX_SPEED
     min_speed = MIN_SPEED
     step_angle = STEP_ANGLE
-    max_angle  = 180
+    max_angle  = MAX_ANGLE
 
     def getch():
         fd = sys.stdin.fileno()
