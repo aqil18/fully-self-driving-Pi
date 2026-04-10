@@ -2,15 +2,10 @@ import pandas as pd, os
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 
-datasets = [
-    "datasets/forward_bends",
-    "datasets/forward_curve",
-    "datasets/reverse_bends",
-    "datasets/reverse_curve",
-]
 
 frames = []
-for d in datasets:
+for i in range(1, 9):
+    d = f"datasets/{i}"
     d = os.path.join(ROOT, d)
     df = pd.read_csv(f"{d}/labels/labels.csv")
     df["filename"] = df["filename"].apply(lambda f: f"{d}/images/{f}")
