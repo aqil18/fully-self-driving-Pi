@@ -2,46 +2,40 @@
 
 import rclpy
 from rclpy.node import Node
-from interfaces.msg import Motor
+from interfaces.msg import Motor as MotorMsg
 from std_msgs.msg import Empty
 import sys
 import termios
 import tty
 import select
+from .car_utils.Motor_api import Motor, MAX_SPEED, MIN_SPEED, STEP_SPEED, STEP_ANGLE, MAX_ANGLE
 
 class TeleopNode(Node):
     def __init__(self):
         super().__init__('teleop_node')
 
-        self.steer_pub = self.create_publisher(Motor, '/motor/cmd', 10)
+        self.motor_pub = self.create_publisher(MotorMsg, '/motor/cmd', 10)
         self.shutdown_pub = self.create_publisher(Empty, '/teleop/shutdown', 10)
 
-
+        self.motor = Motor()
         self.speed = 0
-        self.step_speed = 10     # base speed %
-        self.max_speed = 40
-        self.min_speed = 0
         self.angle = 0
-        self.angle_step = 15
-        self.max_angle = 90      # degrees
+        self.step_speed = STEP_SPEED
+        self.max_speed = MAX_SPEED
+        self.min_speed = MIN_SPEED
+        self.angle_step = STEP_ANGLE
+        self.max_angle = MAX_ANGLE
 
-        # Do we need a timer here?
-        # self.timer = self.create_timer(0.05, self.loop)  # 20 Hz
         self.loop()
 
     def getch(self):
-        import sys, termios, tty
-
         fd = sys.stdin.fileno()
         orig = termios.tcgetattr(fd)
-
         try:
-            tty.setcbreak(fd)  # or tty.setraw(fd) if you prefer raw mode's behavior.
+            tty.setcbreak(fd)
             return sys.stdin.read(1)
         finally:
             termios.tcsetattr(fd, termios.TCSAFLUSH, orig)
-
-
 
     def loop(self):
         print("\nWASD Motor Teleop")
@@ -70,17 +64,11 @@ class TeleopNode(Node):
                 self.shutdown_pub.publish(Empty())
                 break
 
-
-            cmdAngle = self.angle
-            cmdSpeed = self.speed
-
-            self.get_logger().info(
-                f"Speed: {cmdSpeed}%, Angle: {cmdAngle}°"
-            )
-            msg = Motor()
-            msg.speed = cmdSpeed
-            msg.angle = cmdAngle
-            self.steer_pub.publish(msg)
+            self.get_logger().info(f"Speed: {self.speed}%, Angle: {self.angle}°")
+            msg = MotorMsg()
+            msg.speed = self.speed
+            msg.angle = self.angle
+            self.motor_pub.publish(msg)
 
 
 
