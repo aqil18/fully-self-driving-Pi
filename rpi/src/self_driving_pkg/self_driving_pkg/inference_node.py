@@ -85,7 +85,7 @@ class LaneInferenceNode(Node):
 
             motor_msg = Motor()
             motor_msg.angle = int(self.smoothed_angle)
-            motor_msg.speed = int(throttle)
+            motor_msg.speed = 6
             self.motor_pub.publish(motor_msg)
 
             self.get_logger().info(
