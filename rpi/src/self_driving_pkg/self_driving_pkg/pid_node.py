@@ -7,7 +7,7 @@ from interfaces.msg import Motor
 import time
 
 # ── Tune these ────────────────────────────────────────────────────────────────
-DRIVE_SPEED   = 6      # fixed forward speed (0–40)
+DRIVE_SPEED   = 4      # fixed forward speed (0–40)
 Kp            = 0.08    # proportional gain  (start small, increase until it steers)
 Ki            = 0.0     # integral gain      (add if it drifts consistently to one side)
 Kd            = 0.02    # derivative gain    (add to dampen oscillation)
