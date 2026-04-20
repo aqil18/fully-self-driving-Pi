@@ -8,7 +8,7 @@ import time
 
 # ── Tune these ────────────────────────────────────────────────────────────────
 DRIVE_SPEED       = 4      # fixed forward speed (0–40)
-Kp                = 0.35   # proportional gain
+Kp                = 0.6   # proportional gain
 Ki                = 0.0    # integral gain
 Kd                = 0.02   # derivative gain
 MAX_ANGLE         = 90     # clamp output to ±90°
