@@ -25,6 +25,13 @@ def generate_launch_description():
         Node(
             package='self_driving_pkg',
             namespace='fsd',
+            executable='inference_node',
+            name='inference'
+        ),
+
+        Node(
+            package='self_driving_pkg',
+            namespace='fsd',
             executable='pid_node',
             name='pid'
         ),
