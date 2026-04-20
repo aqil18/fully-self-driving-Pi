@@ -27,7 +27,6 @@ class MotorActionNode(Node):
         try:
             angle = msg.angle
             speed = msg.speed
-            self.get_logger().info(f"Received motor command - Angle: {angle}, Speed: {speed}")
             self.motor.move(angle, speed)
             self.get_logger().info(f'Moving at {angle}° with {speed}% speed')
 
