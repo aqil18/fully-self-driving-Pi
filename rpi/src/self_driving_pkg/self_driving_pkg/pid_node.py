@@ -76,7 +76,7 @@ class PIDNode(Node):
 
         self._publish(angle, DRIVE_SPEED)
         self.get_logger().info(
-            f"[PERCEPTION] offset={msg.data:+d}  angle={angle:+d}"
+            f"[PID] angle={angle:+d} speed={DRIVE_SPEED}"
         )
 
     # ------------------------------------------------------------------

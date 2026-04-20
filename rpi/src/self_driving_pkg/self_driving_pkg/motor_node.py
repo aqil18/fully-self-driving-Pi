@@ -28,7 +28,7 @@ class MotorActionNode(Node):
             angle = msg.angle
             speed = msg.speed
             self.motor.move(angle, speed)
-            self.get_logger().info(f'Moving at {angle}° with {speed}% speed')
+            self.get_logger().info(f'[MOTOR] angle={angle}° speed={speed}')
 
         except Exception as e:
             self.get_logger().error(f'Error processing message: {e}')

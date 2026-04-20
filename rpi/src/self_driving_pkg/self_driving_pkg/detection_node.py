@@ -76,7 +76,7 @@ class LaneDetectionNode(Node):
         self.offset_pub.publish(offset_msg)
 
         self.image_pub.publish(self.bridge.cv2_to_imgmsg(out, "bgr8"))
-        self.get_logger().info(f"offset={offset:+d}")
+        self.get_logger().info(f"[PERCEPTION] offset={offset:+d}")
 
 
 def main():
