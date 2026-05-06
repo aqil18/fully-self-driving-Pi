@@ -3,12 +3,16 @@ import cv2
 import math
 import pandas as pd
 import numpy as np
-from preprocessor import PreProcessor 
+from preprocessor import PreProcessor
+from perception import get_lateral_offset
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
 from config import Config
 from pipilotnet import PiPilotNet
+
+# Must match normalization used in inference_node
+CAMERA_W = 640
 
 
 cfg = Config()
@@ -37,51 +41,49 @@ class DrivingDataset(Dataset):
     def __len__(self):
         return len(self.df)
 
-    ### Adjusts some examples to counteract some results
-    ### ! This may do more harm than good
-    def _augment(self, rgb: np.ndarray, steering: float):
+    def _augment(self, rgb: np.ndarray, steering: float, offset: float):
         # brightness jitter
         if np.random.rand() < 0.5:
             factor = 0.6 + 0.8 * np.random.rand()
             rgb = np.clip(rgb * factor, 0.0, 1.0)
 
-        # horizontal flip (and negate steering)
+        # horizontal flip — negate both steering and offset
         if np.random.rand() < 0.5:
             rgb = np.ascontiguousarray(rgb[:, ::-1, :])
             steering = -steering
+            offset = -offset
 
-        return rgb, steering
+        return rgb, steering, offset
 
     def __getitem__(self, idx):
-        # Gets the path of image, steering angle and throttle
         row = self.df.iloc[idx]
-        fname = row["filename"]
         steering = float(row["steering"])
         throttle = float(row["throttle"])
 
-        # Reads in image
-        path = fname
-        bgr = cv2.imread(path, cv2.IMREAD_COLOR)
+        bgr = cv2.imread(row["filename"], cv2.IMREAD_COLOR)
         if bgr is None:
-            raise FileNotFoundError(f"Could not read image: {path}")
-        
-        # Preprocesses and augments the image
+            raise FileNotFoundError(f"Could not read image: {row['filename']}")
+
+        # Use pre-recorded offset from CSV when available (new datasets).
+        # Fall back to recomputing from the image for old datasets without the column.
+        if 'offset' in row.index and not pd.isna(row['offset']):
+            offset = float(np.clip(row['offset'], -1.0, 1.0))
+        else:
+            raw_offset = get_lateral_offset(bgr)
+            offset = (raw_offset / (bgr.shape[1] / 2)) if raw_offset is not None else 0.0
+            offset = float(np.clip(offset, -1.0, 1.0))
+
         rgb = self.preprocessor.preprocess(bgr)
         if self.augment:
-            rgb, steering = self._augment(rgb, steering)
+            rgb, steering, offset = self._augment(rgb, steering, offset)
 
-
-        # DO WE NEED TO DO THIS TOO?
         # HWC -> CHW
-        # reorders the axes of the image array 
-        # makes it into channel, heigh, width shape
         chw = np.transpose(rgb, (2, 0, 1))
-        # 3D tensor for image [channel][vert pixel][horiz pixel]
         x = torch.from_numpy(chw).float()
-        # 1D tensor for the steering and throttle
-        y = torch.tensor([steering/cfg.max_angle], dtype=torch.float32)
-        z = torch.tensor([throttle/cfg.max_throttle], dtype=torch.float32)
-        return x, y, z
+        offset_t = torch.tensor([offset], dtype=torch.float32)
+        y = torch.tensor([steering / cfg.max_angle], dtype=torch.float32)
+        z = torch.tensor([throttle / cfg.max_throttle], dtype=torch.float32)
+        return x, offset_t, y, z
 
 
 # -----------------------------
@@ -98,18 +100,18 @@ def run_epoch(model, loader, optimizer, device, train: bool):
     total_n = 0
     mse = nn.MSELoss()
 
-    for x, y, z in loader:
+    for x, offset, y, z in loader:
 
-        x = x.to(device)
-        y = y.to(device)
-        z = z.to(device)
-        
+        x      = x.to(device)
+        offset = offset.to(device)
+        y      = y.to(device)
+        z      = z.to(device)
 
         if train:
             optimizer.zero_grad()
 
-        pred_steering, pred_throttle = model(x)   # Returns 2 tensors
-        
+        pred_steering, pred_throttle = model(x, offset)
+
 
         loss_steering = mse(pred_steering, y)
         loss_throttle = mse(pred_throttle, z)
@@ -185,19 +187,19 @@ def main():
     # quick test inference on the last val image
     test_row = val_df.iloc[-1]
     ds_tmp = DrivingDataset(val_df.iloc[-1:].copy(), preprocessor, augment=False)
-    x, y, z = ds_tmp[0]
-    x = x.unsqueeze(0).to(device)
+    x, offset_t, _y, _z = ds_tmp[0]
+    x        = x.unsqueeze(0).to(device)
+    offset_t = offset_t.unsqueeze(0).to(device)
 
     model.eval()
     with torch.no_grad():
-        pred_steering, pred_throttle = model(x)
+        pred_steering, pred_throttle = model(x, offset_t)
 
     print("\nQuick test:")
     print(f"Image: {test_row['filename']}")
-    print(f"Actual steering:  {float(test_row['steering']): .3f}")
-    print(f"Actual throttle:  {float(test_row['throttle']): .3f}")
-    print(f"Pred steering:    {pred_steering.item() * 90}") 
-    print(f"Pred throttle:    {pred_throttle.item() * 40}")
+    print(f"Actual steering:  {float(test_row['steering']):.3f}  |  Pred: {pred_steering.item() * cfg.max_angle:.3f}")
+    print(f"Actual throttle:  {float(test_row['throttle']):.3f}  |  Pred: {pred_throttle.item() * cfg.max_throttle:.3f}")
+    print(f"Lane offset (normalised): {offset_t.item():.3f}")
 
 
 if __name__ == "__main__":

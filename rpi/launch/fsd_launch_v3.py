@@ -9,23 +9,24 @@ def generate_launch_description():
             executable='v4l2_camera_node',
             name='camera'
         ),
-        # Runs perception so lane offset is available for the recorder
+        # Detects lane and publishes /detection/offset
         Node(
             package='self_driving_pkg',
             namespace='fsd',
             executable='detection_node',
             name='detection'
         ),
+        # Takes image + offset, runs model, publishes /motor/cmd
+        Node(
+            package='self_driving_pkg',
+            namespace='fsd',
+            executable='inference_node',
+            name='inference'
+        ),
         Node(
             package='self_driving_pkg',
             namespace='fsd',
             executable='motor_node',
             name='motor'
-        ),
-        Node(
-            package='self_driving_pkg',
-            namespace='fsd',
-            executable='dataset_recorder',
-            name='recorder'
-        ),
+        )
     ])
