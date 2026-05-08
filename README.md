@@ -2,7 +2,7 @@
 Fully (but not so fully) self driving Raspberry Pi car.
 
 
-[![Watch the video](https://youtu.be/4L_sISlG2ks)](https://youtu.be/4L_sISlG2ks)
+[![Watch the video](/demos/pi%20thumbnail.jpg)](https://youtu.be/4L_sISlG2ks)
 
 
 # Problem 1 - Lane Tracking
