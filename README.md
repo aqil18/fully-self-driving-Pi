@@ -1,5 +1,5 @@
 # fully-self-driving-Pi
-Fully (but not so fully) self driving Raspberry Pi car.
+Click on the youtube video below for a demo.
 
 
 [![Watch the video](/demos/pi%20thumbnail.jpg)](https://youtu.be/4L_sISlG2ks)
