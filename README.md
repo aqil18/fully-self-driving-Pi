@@ -11,7 +11,7 @@ The goal is to effectively follow a line by supplying angle commands to a motor 
 # Architecture
 The system is a ROS 2 pipeline. Each node runs as a separate process and communicates via topics.
 
-<img src="demos/pipeline.png" width="100%">
+<img src="demos/pipeline 2.png" width="100%">
 
 
 | Node | What it does |
@@ -23,6 +23,7 @@ The system is a ROS 2 pipeline. Each node runs as a separate process and communi
 | `motor_node` | Subscribes to `/motor/cmd`, drives motors and servo |
 | `teleop_node` | WASD keyboard control. Publishes to `/motor/cmd` and `/teleop/shutdown` |
 | `dataset_recorder` | Records images + motor commands + offset to CSV for training |
+| `web_video_server` | Streams any ROS image topic over HTTP — view camera feed in a browser without being on the Pi |
 
 # Launch files
 All launch files are in `rpi/launch/`
@@ -35,14 +36,6 @@ All launch files are in `rpi/launch/`
 | `data_collect_launch.py` | camera + detection + motor + dataset recorder |
 
 # How to obtain the dataset 
-Batteries in
-Find IP address on local wifi (Connect to a display)
-ssh aqil@128.189.245.208 (Hasnt changed in 2 weeks)
-Turn on battery power and remove main power cable
-Turn on load power
-Cd into FSD from 2 terminals make sure to cd into rpi code
-Git pull
-Source setup files in both source setup.sh
 Record the dataset from the pi
 ```
 ros2 launch data_collect_launch.py (from launch folder)
@@ -51,11 +44,11 @@ ros2 run self_driving_pkg teleop_node
 Teleop controls: W/S speed up/down, A/D steer left/right, SPACE stop, CTRL+C stop and signal recorder to shut down
 
 To view camera output go to
-http://128.189.245.208:8080/stream_viewer?topic=/fsd/image_raw
+http://IP:8080/stream_viewer?topic=/fsd/image_raw
 
 From a terminal thats not on the pi run 
 ```
-rsync -av --progress aqil@128.189.245.208:/home/aqil/fully-self-driving-Pi/rpi/launch/datasets ~/Downloads/
+rsync -av --progress
 ```
 
 Dataset lands in `rpi/launch/datasets/<timestamp>/` with structure:
@@ -171,7 +164,7 @@ python3 -m pip install smbus2
 
 ## ROS setup
 ```
-export PYTHONPATH="/home/aqil/envx/lib/python3.12/site-packages"  # adjust for your system
+export PYTHONPATH="/home/..."  # adjust for your system
 rosdep install -i --from-path src --rosdistro jazzy -y
 ```
 
@@ -190,4 +183,4 @@ colcon build --packages-select web_video_server
 source install/setup.bash
 ros2 run web_video_server web_video_server
 ```
-Then open http://128.189.245.208:8080/stream_viewer?topic=/fsd/image_raw
+Then open http://IP:8080/stream_viewer?topic=/fsd/image_raw
